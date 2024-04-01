@@ -102,7 +102,7 @@
         "persistence": "enable",
         "respond-single-record": "enable",
         "vs_pool_list": [
-        {% for pool in item.vs_pool %}
+          {% for pool in item.vs_pool %}
           {
             "isp": "",
             "mkey": "{{ pool.mkey }}",
@@ -110,7 +110,7 @@
             "virtual-server-pool": "{{ pool.pool_name }}",
             "weight": "{{ pool.weight }}"
           }{% if not loop.last %},{% endif %}
-        {% endfor %}
+          {% endfor %}
         ],
         "vs_pool_list_count": "
       }

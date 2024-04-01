@@ -43,7 +43,14 @@
         "mkey": "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}",
         "persistence": "enable",
         "respond-single-record": "enable",
-        "vs_pool_list": "",
+        "vs_pool_list": [
+        {% for pool in item.vs_pool %}
+          {
+            "mkey": "{{ pool.mkey }}",
+            "virtual-server-pool": "{{ pool.pool_name }}"
+          }{% if not loop.last %},{% endif %}
+        {% endfor %}
+        ],
         "vs_pool_list_count": ""
       }
   register: fad_glb_host_new_data

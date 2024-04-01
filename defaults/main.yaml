@@ -3,7 +3,18 @@ fad_glb_host:
     domain: devops.ndkprd.com # base domain without dot
     scope: public # for naming purpose naming only, I personally use "public" and "local"
     default_ipv4: 0.0.0.0 # default IP when none of virtual server work
+    vs_pool:
+      - mkey: DC1 # your identifier for the VS pool
+        pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
+      - mkey: DC2
+        pool_name: waf.dc2.ndkprd.com
+
   - hostname: sonarqube
     domain: devops.ndkprd.com
     scope: public
     default_ipv4: 0.0.0.0
+    vs_pool:
+      - mkey: DC1
+        pool_name: waf.dc1.ndkprd.com
+      - mkey: DC2
+        pool_name: waf.dc2.ndkprd.com

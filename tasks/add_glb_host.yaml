@@ -38,18 +38,16 @@
   tags:
     - debug
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Trying to create new GLB Host entry.
-  ansible.builtin.uri:
-    method: POST
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}"
-    body_format: json
-    validate_certs: false
-    return_content: yes
-    status_code: 200
-    headers:
-      'Content-Type': 'application/json'
-      'APITOKEN': '{{ fad_apitoken }}'
-    body: |
+- name: ({{ item.hostname }}.{{ item.domain }}) Create tempfile for request body.
+  ansible.builtin.tempfile:
+    state: file
+    suffix: ".json"
+  register: temp_file
+  delegate_to: localhost
+
+- name: ({{ item.hostname }}.{{ item.domain }}) Write request body to tempfile.
+  ansible.builtin.copy:
+    content: |
       {
         "default-feedback-ip": "{{ item.default_ipv4 }}",
         "default-feedback-ip6": "",
@@ -73,6 +71,31 @@
         ],
         "vs_pool_list_count": ""
       }
+    dest: "{{ temp_file.path }}"
+  delegate_to: localhost
+
+- name: Print out the content of temp file.
+  ansible.builtin.shell:
+    cmd: "cat {{ temp_file.path }}"
+  delegate_to: localhost
+  register: file_content
+
+- debug:
+    msg: "{{ file_content.stdout }}"
+  delegate_to: localhost
+
+- name: ({{ item.hostname }}.{{ item.domain }}) Trying to create new GLB Host entry.
+  ansible.builtin.uri:
+    method: POST
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}"
+    body_format: json
+    validate_certs: false
+    return_content: yes
+    status_code: 200
+    headers:
+      'Content-Type': 'application/json'
+      'APITOKEN': '{{ fad_apitoken }}'
+    body: "{{ lookup('file', temp_file.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
@@ -90,30 +113,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: |
-      {
-        "default-feedback-ip": "{{ item.default_ipv4 }}",
-        "default-feedback-ip6": "",
-        "host-name": "{{ item.hostname }}",
-        "domain-name": "{{ item.domain }}.",
-        "fortiview": "enable",
-        "load-balance-method": "",
-        "mkey": "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}",
-        "persistence": "enable",
-        "respond-single-record": "enable",
-        "vs_pool_list": [
-          {% for pool in item.vs_pool %}
-          {
-            "isp": "",
-            "mkey": "{{ pool.mkey }}",
-            "topology": "",
-            "virtual-server-pool": "{{ pool.pool_name }}",
-            "weight": "{{ pool.weight }}"
-          }{% if not loop.last %},{% endif %}
-          {% endfor %}
-        ],
-        "vs_pool_list_count": ""
-      }
+    body: "{{ lookup('file', temp_file.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   when: "fad_glb_host_new_data.json.payload == -15"

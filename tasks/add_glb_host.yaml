@@ -34,7 +34,7 @@
       'APITOKEN': '{{ fad_apitoken }}'
   register: fad_glb_host_existing_data
   delegate_to: localhost
-  when: "fad_glb_host_existing_data.json.payload != null"
+  when: "fad_glb_host_existing_data.json.payload != 'null'"
   tags:
     - debug
 

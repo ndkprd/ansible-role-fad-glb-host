@@ -56,8 +56,8 @@
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
-  #failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
-  ignore_errors: yes
+  failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
+  #ignore_errors: yes
   
 - name: ({{ item.hostname }}.{{ item.domain }}) Update the GLB Host entry.
   ansible.builtin.uri:
@@ -95,8 +95,8 @@
   delegate_to: localhost
   when: "fad_glb_host_new_data.json.payload == -15"
   changed_when: "fad_glb_host_new_data.json.payload == 0"
-  #failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
-  ignore_errors: yes
+  failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
+  #ignore_errors: yes
 
 - name: ({{ item.hostname }}.{{ item.domain }}) Get the new value of GLB Host data.
   ansible.builtin.uri:
@@ -116,7 +116,7 @@
 
 - name: ({{ item.hostname }}.{{ item.domain }}) Print out the new value of GLB Host data.
   ansible.builtin.debug:
-    var: fad_glb_host_existing_data
+    var: fad_glb_host_existing_data.json.payload
   delegate_to: localhost
   tags:
     - debug

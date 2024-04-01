@@ -84,6 +84,10 @@
     msg: "{{ file_content.stdout }}"
   delegate_to: localhost
 
+- debug:
+    msg:" {{ lookup('ansible.builtin.file', temp_file.path) }}"
+  delegate_to: localhost
+
 - name: ({{ item.hostname }}.{{ item.domain }}) Trying to create new GLB Host entry.
   ansible.builtin.uri:
     method: POST

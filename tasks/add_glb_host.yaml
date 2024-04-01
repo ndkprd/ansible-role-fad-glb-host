@@ -21,6 +21,23 @@
   tags:
     - debug
 
+- name: ({{ item.hostname }}.{{ item.domain }}) Delete if data exists.
+  ansible.builtin.uri:
+    method: DELETE
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    body_format: json
+    validate_certs: false
+    return_content: yes
+    status_code: 200
+    headers:
+      'Content-Type': 'application/json'
+      'APITOKEN': '{{ fad_apitoken }}'
+  register: fad_glb_host_existing_data
+  delegate_to: localhost
+  when: "fad_glb_host_existing_data.json.payload != null"
+  tags:
+    - debug
+
 - name: ({{ item.hostname }}.{{ item.domain }}) Trying to create new GLB Host entry.
   ansible.builtin.uri:
     method: POST

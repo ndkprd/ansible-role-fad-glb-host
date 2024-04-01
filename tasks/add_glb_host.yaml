@@ -71,7 +71,7 @@
           }{% if not loop.last %},{% endif %}
         {% endfor %}
         ],
-        "vs_pool_list_count": "
+        "vs_pool_list_count": ""
       }
   register: fad_glb_host_new_data
   delegate_to: localhost
@@ -112,7 +112,7 @@
           }{% if not loop.last %},{% endif %}
           {% endfor %}
         ],
-        "vs_pool_list_count": "
+        "vs_pool_list_count": ""
       }
   register: fad_glb_host_new_data
   delegate_to: localhost

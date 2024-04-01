@@ -88,7 +88,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', temp_file.path) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
@@ -106,7 +106,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('file', temp_file.path) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   when: "fad_glb_host_new_data.json.payload == -15"

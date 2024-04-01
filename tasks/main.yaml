@@ -1,0 +1,5 @@
+---
+
+- name: Include the add GLB host task.
+  include_tasks: add_glb_host.yaml
+  loop: "{{ fad_glb_host }}"

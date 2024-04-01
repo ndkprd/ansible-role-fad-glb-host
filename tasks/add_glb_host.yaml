@@ -1,7 +1,12 @@
-- name: ({{ item.hostname }}.{{ item.domain }}) Get the existing value of GLB Host data.
+- name: ({{ item.scope }}_{{ item.hostname }}.{{ item.domain }}) Set fact for GLB Host FQDN.
+  ansible.builtin.set_fact:
+    fad_glb_host.entry_name: "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+  delegate_to: localhost
+
+- name: ({{ item.entry_name }}) Get the existing value of GLB Host data.
   ansible.builtin.uri:
     method: GET
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.entry_name }}"
     body_format: json
     validate_certs: false
     return_content: yes
@@ -14,17 +19,17 @@
   tags:
     - debug
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Print out the existing value of GLB Host data.
+- name: ({{ item.entry_name }}) Print out the existing value of GLB Host data.
   ansible.builtin.debug:
     var: fad_glb_host_existing_data.json
   delegate_to: localhost
   tags:
     - debug
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Delete if data exists.
+- name: ({{ item.entry_name }}) Delete if data exists.
   ansible.builtin.uri:
     method: DELETE
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.entry_name }}"
     body_format: json
     validate_certs: false
     return_content: yes
@@ -38,14 +43,14 @@
   tags:
     - debug
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Create tempfile for request body.
+- name: ({{ item.entry_name }}) Create tempfile for request body.
   ansible.builtin.tempfile:
     state: file
     suffix: ".json"
   register: temp_file
   delegate_to: localhost
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Write request body to tempfile.
+- name: ({{ item.entry_name }}) Write request body to tempfile.
   ansible.builtin.copy:
     content: |
       {
@@ -55,7 +60,7 @@
         "domain-name": "{{ item.domain }}.",
         "fortiview": "enable",
         "load-balance-method": "",
-        "mkey": "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}",
+        "mkey": "{{ item.entry_name }}",
         "persistence": "enable",
         "respond-single-record": "enable",
         "vs_pool_list": [
@@ -80,18 +85,14 @@
   delegate_to: localhost
   register: file_content
 
-#- debug:
-    #msg: "{{ file_content.stdout }}"
-  #delegate_to: localhost
+- debug:
+    msg: "{{ file_content.stdout }}"
+  delegate_to: localhost
 
-#- debug:
-    #msg:" {{ lookup('ansible.builtin.file', temp_file.path) }}"
-  #delegate_to: localhost
-
-- name: ({{ item.hostname }}.{{ item.domain }}) Trying to create new GLB Host entry.
+- name: ({{ item.entry_name }}) Trying to create new GLB Host entry.
   ansible.builtin.uri:
     method: POST
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}"
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.entry_name }}"
     body_format: json
     validate_certs: false
     return_content: yes
@@ -99,40 +100,17 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: |
-      {
-        "default-feedback-ip": "{{ item.default_ipv4 }}",
-        "default-feedback-ip6": "::",
-        "host-name": "{{ item.hostname }}",
-        "domain-name": "{{ item.domain }}.",
-        "fortiview": "enable",
-        "load-balance-method": "",
-        "mkey": "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}",
-        "persistence": "enable",
-        "respond-single-record": "enable",
-        "vs_pool_list": [
-          {% for pool in item.vs_pool %}
-          {
-            "isp": "",
-            "mkey": "{{ pool.mkey }}",
-            "topology": "",
-            "virtual-server-pool": "{{ pool.pool_name }}",
-            "weight": "{{ pool.weight }}"
-          }{% if not loop.last %},{% endif %}
-          {% endfor %}
-        ],
-        "vs_pool_list_count": ""
-      }
+    body: "{{ lookup('ansible.builtin.file', temp_file.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
   failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
   #ignore_errors: yes
   
-- name: ({{ item.hostname }}.{{ item.domain }}) Update the GLB Host entry.
+- name: ({{ item.entry_name }}) Update the GLB Host entry.
   ansible.builtin.uri:
     method: PUT
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.entry_name }}"
     body_format: json
     validate_certs: false
     return_content: yes
@@ -148,10 +126,10 @@
   failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
   #ignore_errors: yes
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Get the new value of GLB Host data.
+- name: ({{ item.entry_name }}) Get the new value of GLB Host data.
   ansible.builtin.uri:
     method: GET
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.entry_name }}"
     body_format: json
     validate_certs: false
     return_content: yes
@@ -164,7 +142,7 @@
   tags:
     - debug
 
-- name: ({{ item.hostname }}.{{ item.domain }}) Print out the new value of GLB Host data.
+- name: ({{ item.entry_name }}) Print out the new value of GLB Host data.
   ansible.builtin.debug:
     var: fad_glb_host_existing_data.json.payload
   delegate_to: localhost

@@ -73,7 +73,7 @@
       {
         "default-feedback-ip": "{{ item.default_ipv4 }}",
         "default-feedback-ip6": "",
-        "host-name": "{{ item.hostname }}"
+        "host-name": "{{ item.hostname }}",
         "domain-name": "{{ item.domain }}.",
         "fortiview": "enable",
         "load-balance-method": "",

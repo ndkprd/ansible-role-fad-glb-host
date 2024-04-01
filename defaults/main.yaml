@@ -1,3 +1,5 @@
+fad_vdom: root
+
 fad_glb_host:
   - hostname: repo # hostname without domain
     domain: devops.ndkprd.com # base domain without dot

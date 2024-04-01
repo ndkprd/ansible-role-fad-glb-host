@@ -40,14 +40,12 @@
   register: fad_glb_host_existing_data
   delegate_to: localhost
   when: "fad_glb_host_existing_data.json.payload != 'null'"
-  tags:
-    - debug
 
 - name: ({{ fad_glb_host_entry }}) Create tempfile for request body.
   ansible.builtin.tempfile:
     state: file
     suffix: ".json"
-  register: temp_file
+  register: request_body
   delegate_to: localhost
 
 - name: ({{ fad_glb_host_entry }}) Write request body to tempfile.
@@ -76,17 +74,7 @@
         ],
         "vs_pool_list_count": ""
       }
-    dest: "{{ temp_file.path }}"
-  delegate_to: localhost
-
-- name: Print out the content of temp file.
-  ansible.builtin.shell:
-    cmd: "cat {{ temp_file.path }}"
-  delegate_to: localhost
-  register: file_content
-
-- debug:
-    msg: "{{ file_content.stdout }}"
+    dest: "{{ request_body.path }}"
   delegate_to: localhost
 
 - name: ({{ fad_glb_host_entry }}) Trying to create new GLB Host entry.

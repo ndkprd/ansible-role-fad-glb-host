@@ -41,15 +41,7 @@
   when: fad_glb_host_existing_data.json.payload != fad_null
   failed_when: fad_glb_host_existing_data.json.payload != 0
 
-#- name: Create file for request body ({{ fad_glb_host_entry }}).
-  #ansible.builtin.file:
-    #state: touch
-    #path: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
-  #register: request_body
-  #delegate_to: localhost
-  #run_once: true
-
-- name: Write request body ({{ fad_glb_host_entry }}).
+- name: Write request body json tmp file ({{ fad_glb_host_entry }}).
   ansible.builtin.copy:
     content: |
       {
@@ -78,9 +70,7 @@
     dest: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
   register: request_body
   delegate_to: localhost
-
-- debug:
-    var: request_body
+  run_once: true
 
 - name: Trying to create new GLB Host entry ({{ fad_glb_host_entry }}).
   ansible.builtin.uri:
@@ -93,7 +83,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
@@ -110,7 +100,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   when: "fad_glb_host_new_data.json.payload == -15"

@@ -10,7 +10,7 @@
     url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
     body_format: json
     validate_certs: false
-    return_content: yes
+    return_content: true
     status_code: 200
     headers:
       'Content-Type': 'application/json'
@@ -31,7 +31,7 @@
     url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
     body_format: json
     validate_certs: false
-    return_content: yes
+    return_content: true
     status_code: 200
     headers:
       'Content-Type': 'application/json'
@@ -69,6 +69,9 @@
         "vs_pool_list_count": ""
       }
     dest: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
+    owner: ansible
+    group: ansible
+    mode: u+rw,g-rw,o-rw
   register: request_body
   delegate_to: localhost
   run_once: true
@@ -79,7 +82,7 @@
     url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
     body_format: json
     validate_certs: false
-    return_content: yes
+    return_content: true
     status_code: 200
     headers:
       'Content-Type': 'application/json'
@@ -89,14 +92,14 @@
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
   failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
-  
+
 # - name: Update the GLB Host entry ({{ fad_glb_host_entry }}).
   # ansible.builtin.uri:
     # method: PUT
     # url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
     # body_format: json
     # validate_certs: false
-    # return_content: yes
+    # return_content: true
     # status_code: 200
     # headers:
       # 'Content-Type': 'application/json'
@@ -114,7 +117,7 @@
     url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
     body_format: json
     validate_certs: false
-    return_content: yes
+    return_content: true
     status_code: 200
     headers:
       'Content-Type': 'application/json'

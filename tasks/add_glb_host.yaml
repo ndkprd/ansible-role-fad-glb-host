@@ -39,6 +39,7 @@
   register: fad_glb_host_existing_data
   delegate_to: localhost
   when: fad_glb_host_existing_data.json.payload != fad_null
+  changed_when: fad_glb_host_existing_data.json.payload == 0
   failed_when: fad_glb_host_existing_data.json.payload != 0
 
 - name: Write request body json tmp file ({{ fad_glb_host_entry }}).

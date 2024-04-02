@@ -41,7 +41,7 @@
 
 - name: Create file for request body ({{ fad_glb_host_entry }}).
   ansible.builtin.file:
-    state: touch
+    state: file
     path: "/tmp/fortiadc/{{ fad_glb_host_entry }}_request_body.json"
   register: request_body
   delegate_to: localhost

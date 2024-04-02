@@ -69,8 +69,6 @@
         "vs_pool_list_count": ""
       }
     dest: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
-    owner: ansible
-    group: ansible
     mode: u+rw,g-rw,o-rw
   register: request_body
   delegate_to: localhost

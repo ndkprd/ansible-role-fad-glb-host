@@ -37,7 +37,8 @@
       'APITOKEN': '{{ fad_apitoken }}'
   register: fad_glb_host_existing_data
   delegate_to: localhost
-  when: "fad_glb_host_existing_data.json.payload != 'null'"
+  when: fad_glb_host_existing_data.json.payload != "null"
+  failed_when: fad_glb_host_existing_data.json.payload != 0
 
 - name: Create file for request body ({{ fad_glb_host_entry }}).
   ansible.builtin.file:
@@ -46,9 +47,6 @@
   register: request_body
   delegate_to: localhost
   run_once: true
-
-- debug:
-    var: request_body
 
 - name: Write request body ({{ fad_glb_host_entry }}).
   ansible.builtin.copy:

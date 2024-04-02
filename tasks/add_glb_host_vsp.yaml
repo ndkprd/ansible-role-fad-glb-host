@@ -46,5 +46,5 @@
   register: fad_glb_host_vsp_put_result
   delegate_to: localhost
   when: "fad_glb_host_vsp_post_result.json.payload == -15"
-  #changed_when: "fad_glb_host_vsp_put_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_put_result.json.payload != -15 and fad_glb_host_vsp_put_result.json.payload != 0"
+  

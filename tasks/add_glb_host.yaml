@@ -41,13 +41,13 @@
   when: fad_glb_host_existing_data.json.payload != fad_null
   failed_when: fad_glb_host_existing_data.json.payload != 0
 
-- name: Create file for request body ({{ fad_glb_host_entry }}).
-  ansible.builtin.file:
-    state: touch
-    path: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
-  register: request_body
-  delegate_to: localhost
-  run_once: true
+#- name: Create file for request body ({{ fad_glb_host_entry }}).
+  #ansible.builtin.file:
+    #state: touch
+    #path: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
+  #register: request_body
+  #delegate_to: localhost
+  #run_once: true
 
 - name: Write request body ({{ fad_glb_host_entry }}).
   ansible.builtin.copy:
@@ -75,8 +75,12 @@
         ],
         "vs_pool_list_count": ""
       }
-    dest: "{{ request_body.dest }}"
+    dest: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
+    register: request_body
   delegate_to: localhost
+
+- debug:
+    var: request_body
 
 - name: Trying to create new GLB Host entry ({{ fad_glb_host_entry }}).
   ansible.builtin.uri:

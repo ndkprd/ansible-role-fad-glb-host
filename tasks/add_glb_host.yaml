@@ -1,6 +1,7 @@
 - name: Set fact for GLB Host FQDN ({{ item.scope }}_{{ item.hostname }}.{{ item.domain }}).
   ansible.builtin.set_fact:
     fad_glb_host_entry: "{{ item.scope }}_{{ item.hostname }}.{{ item.domain }}"
+    fad_null: null
   delegate_to: localhost
 
 - name: Get the existing value of GLB Host data ({{ fad_glb_host_entry }}).
@@ -37,7 +38,7 @@
       'APITOKEN': '{{ fad_apitoken }}'
   register: fad_glb_host_existing_data
   delegate_to: localhost
-  when: fad_glb_host_existing_data.json.payload != null
+  when: fad_glb_host_existing_data.json.payload != fad_null
   failed_when: fad_glb_host_existing_data.json.payload != 0
 
 - name: Create file for request body ({{ fad_glb_host_entry }}).

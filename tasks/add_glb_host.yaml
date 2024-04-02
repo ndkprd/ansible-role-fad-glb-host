@@ -66,6 +66,9 @@
   changed_when: "fad_glb_host_post_result.json.payload == 0"
   failed_when: "fad_glb_host_post_result.json.payload != -15 and fad_glb_host_post_result.json.payload != 0"
 
+- debug:
+    var: fad_glb_host_post_result
+
 - name: Update the GLB Host entry if the entry already exist ({{ fad_glb_host_entry }}).
   ansible.builtin.uri:
     method: PUT
@@ -85,9 +88,7 @@
   failed_when: "fad_glb_host_put_result.json.payload != -15 and fad_glb_host_put_result.json.payload != 0"
 
 - debug:
-    var:
-      - fad_glb_host_post_result
-      - fad_glb_host_put_result
+    var: fad_glb_host_put_result
 
 - name: Include the GLB Host VS Pool children task ({{ fad_glb_host_entry }}).
   ansible.builtin.include_tasks: add_glb_host_vsp.yaml

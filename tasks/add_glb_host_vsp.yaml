@@ -31,6 +31,9 @@
   changed_when: "fad_glb_host_vsp_post_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_post_result.json.payload != -15 and fad_glb_host_vsp_post_result.json.payload != 0"
 
+- debug:
+    var: fad_glb_host_vsp_post_result
+
 - name: Update the GLB Host entry for existing entry ({{ fad_glb_host_entry }} - {{ item_vsp.pool_name }}).
   ansible.builtin.uri:
     method: PUT
@@ -50,6 +53,4 @@
   failed_when: "fad_glb_host_vsp_put_result.json.payload != -15 and fad_glb_host_vsp_put_result.json.payload != 0"
 
 - debug:
-    var: 
-      - fad_glb_host_vsp_put_result
-      - fad_glb_host_vsp_post_result
+    var: fad_glb_host_vsp_put_result

@@ -102,6 +102,8 @@
 - name: Include the GLB Host VS Pool children task ({{ fad_glb_host_entry }}).
   ansible.builtin.include_tasks: add_glb_host_vsp.yaml
   loop: "{{ item.vs_pool }}"
+  loop_control:
+    loop_var: item_vsp
 
 - name: Get the new value of GLB Host data ({{ fad_glb_host_entry }}).
   ansible.builtin.uri:

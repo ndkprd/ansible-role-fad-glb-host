@@ -31,7 +31,7 @@
   changed_when: "fad_glb_host_vsp_post_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_post_result.json.payload != -15 and fad_glb_host_vsp_post_result.json.payload != 0"
 
-- name: Update the GLB Host entry for existing entry ({{ fad_glb_host_entry }} - {{ item_vsp.pool_name }}).
+- name: Update the GLB Host entry if the entry exist ({{ fad_glb_host_entry }} - {{ item_vsp.pool_name }}).
   ansible.builtin.uri:
     method: PUT
     url:  "https://{{ ansible_host }}/api/global_load_balance_host_child_virtual_server_pool_list?vdom={{ fad_vdom }}&pkey={{ fad_glb_host_entry }}&mkey={{ item_vsp.mkey }}"
@@ -46,5 +46,5 @@
   register: fad_glb_host_vsp_put_result
   delegate_to: localhost
   when: "fad_glb_host_vsp_post_result.json.payload == -15"
-  changed_when: "fad_glb_host_vsp_put_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_put_result.json.payload != -15 and fad_glb_host_vsp_put_result.json.payload != 0"
+  

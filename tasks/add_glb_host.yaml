@@ -90,23 +90,23 @@
   changed_when: "fad_glb_host_new_data.json.payload == 0"
   failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
   
-- name: Update the GLB Host entry ({{ fad_glb_host_entry }}).
-  ansible.builtin.uri:
-    method: PUT
-    url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
-    body_format: json
-    validate_certs: false
-    return_content: yes
-    status_code: 200
-    headers:
-      'Content-Type': 'application/json'
-      'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
-  register: fad_glb_host_new_data
-  delegate_to: localhost
-  when: "fad_glb_host_new_data.json.payload == -15"
-  changed_when: "fad_glb_host_new_data.json.payload == 0"
-  failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
+# - name: Update the GLB Host entry ({{ fad_glb_host_entry }}).
+  # ansible.builtin.uri:
+    # method: PUT
+    # url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ fad_glb_host_entry }}"
+    # body_format: json
+    # validate_certs: false
+    # return_content: yes
+    # status_code: 200
+    # headers:
+      # 'Content-Type': 'application/json'
+      # 'APITOKEN': '{{ fad_apitoken }}'
+    # body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
+  # register: fad_glb_host_new_data
+  # delegate_to: localhost
+  # when: "fad_glb_host_new_data.json.payload == -15"
+  # changed_when: "fad_glb_host_new_data.json.payload == 0"
+  # failed_when: "fad_glb_host_new_data.json.payload != -15 and fad_glb_host_new_data.json.payload != 0"
 
 - name: Get the new value of GLB Host data ({{ fad_glb_host_entry }}).
   ansible.builtin.uri:

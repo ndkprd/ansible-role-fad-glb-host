@@ -28,7 +28,7 @@
     body: "{{ lookup('ansible.builtin.file', glb_host_pool_request_body.dest) }}"
   register: fad_glb_host_vsp_post_result
   delegate_to: localhost
-  changed_when: "fad_glb_host_new_data.json.payload == 0"
+  changed_when: "fad_glb_host_vsp_post_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_post_result.json.payload != -15 and fad_glb_host_vsp_post_result.json.payload != 0"
 
 - name: Update the GLB Host entry for existing entry ({{ fad_glb_host_entry }} - {{ item_vsp.pool_name }}).

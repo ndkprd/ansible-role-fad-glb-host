@@ -76,7 +76,7 @@
         "vs_pool_list_count": ""
       }
     dest: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
-    register: request_body
+  register: request_body
   delegate_to: localhost
 
 - debug:

@@ -39,14 +39,14 @@
   delegate_to: localhost
   when: "fad_glb_host_existing_data.json.payload != 'null'"
 
-- name: Create tempfile for request body ({{ fad_glb_host_entry }}).
-  ansible.builtin.tempfile:
-    state: file
-    suffix: ".json"
+- name: Create file for request body ({{ fad_glb_host_entry }}).
+  ansible.builtin.file:
+    state: touch
+    path: "/tmp/{{ fad_glb_host_entry }}_request_body.json"
   register: request_body
   delegate_to: localhost
 
-- name: Write request body to tempfile ({{ fad_glb_host_entry }}).
+- name: Write request body ({{ fad_glb_host_entry }}).
   ansible.builtin.copy:
     content: |
       {

@@ -45,6 +45,7 @@
     path: "/tmp/fad_{{ fad_glb_host_entry }}_request_body.json"
   register: request_body
   delegate_to: localhost
+  run_once: true
 
 - debug:
     var: request_body
@@ -75,7 +76,7 @@
         ],
         "vs_pool_list_count": ""
       }
-    dest: "{{ request_body.path }}"
+    dest: "{{ request_body.dest }}"
   delegate_to: localhost
 
 - name: Trying to create new GLB Host entry ({{ fad_glb_host_entry }}).
@@ -89,7 +90,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   changed_when: "fad_glb_host_new_data.json.payload == 0"
@@ -106,7 +107,7 @@
     headers:
       'Content-Type': 'application/json'
       'APITOKEN': '{{ fad_apitoken }}'
-    body: "{{ lookup('ansible.builtin.file', request_body.path) }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
   register: fad_glb_host_new_data
   delegate_to: localhost
   when: "fad_glb_host_new_data.json.payload == -15"

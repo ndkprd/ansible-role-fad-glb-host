@@ -20,6 +20,9 @@
     dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
   register: dns_result
   ignore_errors: yes
+  loop: "{{ fad_glb_hosts }}"
+  loop_control:
+    loop_var: host
 
 - name: Debug out test result.
   ansible.builtin.debug:

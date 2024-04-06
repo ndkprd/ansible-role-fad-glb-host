@@ -20,4 +20,5 @@ galaxy_info:
     - fortinet
     - dns
 
-dependencies: []
+dependencies:
+  - ndkprd.fortiadc-glb-vsp

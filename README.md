@@ -8,7 +8,7 @@ Since FAD GLB Host have a recursive dependency (Host -> VSP -> Servers -> Data C
 
 This role also include pseudo-idempotency check that kinda looks like this:
 
-```
+```mermaid.js
 flowchart TD
 	A(START) --> B[Run GET task to get current value]
 	B --> C{is resource defined?}

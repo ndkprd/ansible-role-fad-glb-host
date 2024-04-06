@@ -6,6 +6,21 @@ Ansible role to setup/manage Fortinet's FortiADC GLB Host settings using their H
 
 Since FAD GLB Host have a recursive dependency (Host -> VSP -> Servers -> Data Center), this role will depends on those roles. You can skip them by using tags. See [About Tags](#about-tags) below for more details. 
 
+This role also include pseudo-idempotency check that kinda looks like this:
+
+```
+flowchart TD
+	A(START) --> B[Run GET task to get current value]
+	B --> C{is resource defined?}
+	C -->|no| D[Run POST task]
+	D --> Y[Do previous vs current comparison task]
+	C -->|yes| E{is current value equal to expected value?}
+	E --> |yes| Y
+	E --> |no| F[Run PUT task]
+	F --> Y
+	Y --> Z(END)
+```
+
 ## Usage
 
 ### Hosts Example
@@ -120,13 +135,13 @@ fad_glb_vs_pools:
         server:  dmz.dc1.ndkprd.com
         server_member_name: public-waf-2.dc1.ndkprd.com
 
-fad_glb_host:
+fad_glb_hosts:
   - hostname: repo # hostname without domain
     domain: devops.ndkprd.com # base domain without dot
     scope: public # for naming purpose naming only, I personally use "public" and "local"
     default_ipv4: 0.0.0.0 # default IP when none of virtual server work
-    vs_pool:
-      - mkey: DC1 # high number for mkey
+    vsp_lists:
+      - mkey: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
         weight: 100 # VS pool weight
       - mkey: DC2
@@ -136,7 +151,7 @@ fad_glb_host:
     domain: devops.ndkprd.com
     scope: public
     default_ipv4: 0.0.0.0
-    vs_pool:
+    vsp_lists:
       - mkey: DC1
         pool_name: waf.dc1.ndkprd.com
         weight: 100

@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: ndkprd
-  role_name: fortiadc-glb-host
+  role_name: fortiadc-glb-hosts
   description: An Ansible role to mange/setup Fortinet's FortiADC Global Load Balance host configuration.
 
   license: MIT
@@ -9,11 +9,9 @@ galaxy_info:
   min_ansible_version: '2.12'
 
   platforms:
-    - name: "RHEL/CentOS"
+    - name: Fedora
       versions:
-        - '7'
-        - '8'
-        - '9'
+        - 'all'
 
   galaxy_tags:
     - fortiadc

@@ -7,4 +7,4 @@
 
 - name: Debug out test result.
   ansible.builtin.debug:
-    var: dns_result
+    var: dns_result.stdout

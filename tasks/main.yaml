@@ -16,15 +16,8 @@
     - fad_glb_hosts
 
 - name: Test Host setup using dig.
-  ansible.builtin.command: >
-    dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
-  register: dns_result
-  ignore_errors: yes
+  ansible.builtin.include_tasks: test_dns_result.yaml
   loop: "{{ fad_glb_hosts }}"
   delegate_to: localhost
   loop_control:
     loop_var: host
-
-- name: Debug out test result.
-  ansible.builtin.debug:
-    var: dns_result.results[0].stdout

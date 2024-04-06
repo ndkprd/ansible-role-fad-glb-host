@@ -1,0 +1,9 @@
+---
+- name: Test Host setup using dig against ({{ host.hostname }}.{{ host.domain }}).
+  ansible.builtin.command: >
+    dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
+  register: dns_result
+
+- name: Debug out test result.
+  ansible.builtin.debug:
+    var: dns_result.results[0].stdout

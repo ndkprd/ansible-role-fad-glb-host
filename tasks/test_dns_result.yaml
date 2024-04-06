@@ -5,7 +5,6 @@
   register: dns_result
   delegate_to: localhost
 
-
 - name: Debug out test result.
   ansible.builtin.debug:
     var: dns_result.results[0].stdout

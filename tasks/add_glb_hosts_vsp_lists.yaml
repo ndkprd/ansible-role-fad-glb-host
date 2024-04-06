@@ -44,7 +44,7 @@
         "virtual-server-pool": "{{ vsp_list.pool_name }}",
         "weight": "{{ vsp_list.weight }}"
       }
-    dest: "/tmp/fad_glb_host_vsp_list_{{ host.name }}_{{ vsp_list.pool_name }} request_body.json"
+    dest: "/tmp/fad_glb_host_vsp_list_{{ host.name }}_{{ vsp_list.pool_name }}_request_body.json"
     mode: u+rw,g-rw,o-rw
   register: request_body
   delegate_to: localhost

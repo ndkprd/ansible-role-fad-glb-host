@@ -139,25 +139,25 @@ fad_glb_hosts:
   - hostname: repo # hostname without domain
     domain: devops.ndkprd.com # base domain without dot
     scope: public # for naming purpose naming only, I personally use "public" and "local"
-    default_ipv4: 0.0.0.0 # default IP when none of virtual server work
+    default_ipv4: "0.0.0.0" # default IP when none of virtual server work
     vsp_lists:
       - mkey: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
-        weight: 100 # VS pool weight
+        weight: "100" # VS pool weight
       - mkey: DC2
         pool_name: waf.dc2.ndkprd.com
-        weight: 1
+        weight: "1"
   - hostname: sonarqube
     domain: devops.ndkprd.com
     scope: public
-    default_ipv4: 0.0.0.0
+    default_ipv4: "0.0.0.0"
     vsp_lists:
       - mkey: DC1
         pool_name: waf.dc1.ndkprd.com
-        weight: 100
+        weight: "100"
       - mkey: DC2
         pool_name: waf.dc2.ndkprd.com
-        weight: 1
+        weight: "1"
 
 ```
 

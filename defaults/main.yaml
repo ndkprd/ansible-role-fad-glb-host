@@ -101,16 +101,16 @@ fad_glb_hosts:
   - name: public_repo.devops.ndkprd.com # GLB Host mkey
     hostname: repo # hostname without domain
     domain: devops.ndkprd.com # base domain without dot
-    default_ipv4: 0.0.0.0 # default IP when none of virtual server work
+    default_ipv4: "0.0.0.0" # default IP when none of virtual server work
     default_ipv6: "::"
     fortiview: enable
-    load_balance_method: "wrr"
+    load_balance_method: "weight"
     persistence: enable
     respond_single_record: enable
     vsp_lists:
       - mkey: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
-        weight: 100 # VS pool weight
+        weight: "100" # VS pool weight
       - mkey: DC2
         pool_name: waf.dc2.ndkprd.com
-        weight: 1
+        weight: "1"

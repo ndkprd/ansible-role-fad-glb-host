@@ -18,6 +18,5 @@
 - name: Test Host setup using dig.
   ansible.builtin.include_tasks: test_dns_result.yaml
   loop: "{{ fad_glb_hosts }}"
-  delegate_to: localhost
   loop_control:
     loop_var: host

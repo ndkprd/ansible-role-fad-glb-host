@@ -3,6 +3,8 @@
   ansible.builtin.command: >
     dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
   register: dns_result
+  delegate_to: localhost
+
 
 - name: Debug out test result.
   ansible.builtin.debug:

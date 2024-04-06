@@ -100,13 +100,13 @@
   tags:
     - fad_glb_hosts
 
-# - name: Include the GLB Host VS Pool children task ({{ fad_glb_host_name }}).
-#   ansible.builtin.include_tasks: add_glb_host_vsp.yaml
-#   loop: "{{ host.vsp_lists }}"
-#   loop_control:
-#     loop_var: vsp_list
-#     tags:
-#     - fad_glb_hosts
+- name: Include the GLB Host VSP Lists task ({{ fad_glb_host_name }}).
+  ansible.builtin.include_tasks: add_glb_hosts_vsp_lists.yaml
+  loop: "{{ host.vsp_lists }}"
+  loop_control:
+    loop_var: vsp_list
+    tags:
+    - fad_glb_hosts
 
 - name: Check if the data have changed ({{ fad_glb_host_name }}).
   ansible.builtin.uri:

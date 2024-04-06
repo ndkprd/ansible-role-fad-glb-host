@@ -7,7 +7,7 @@
     - fad_glb_hosts
 
 - name: Include the add GLB host task.
-  ansible.builtin.include_tasks: add_glb_host.yaml
+  ansible.builtin.include_tasks: add_glb_hosts.yaml
   loop: "{{ fad_glb_hosts }}"
   loop_control:
     loop_var: host

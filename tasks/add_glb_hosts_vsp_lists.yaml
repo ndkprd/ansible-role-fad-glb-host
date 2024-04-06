@@ -1,0 +1,110 @@
+- name: Set fact for GLB Host VSP List ({{ host.name }}/{{ vsp_list.pool_name }}).
+  ansible.builtin.set_fact:
+    fad_api_endpoint_glb_host_vsp_lists: https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&pkey={{ host.name }}&mkey={{ vsp_list.mkey }}
+    fad_glb_vsp_list_name: "{{ host.name }}/{{ vsp_list.pool_name }}"
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts_vsp_lists
+
+- name: Print out the GLB Hosts REST API endpoint ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.debug:
+    msg: "Current endpoint: {{ fad_api_endpoint_glb_host_vsp_lists }}"
+  tags:
+    - fad_glb_hosts_vsp_lists
+    - debug
+
+- name: Get the existing value of GLB Host VSP List data ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.uri:
+    method: GET
+    url: "{{ fad_api_endpoint_glb_host_vsp_lists }}"
+    body_format: "{{ fad_api_uri_params.body_format }}"
+    validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+    return_content: "{{ fad_api_uri_params.return_content }}"
+    status_code: "{{ fad_api_uri_params.status_code }}"
+    headers: "{{ fad_api_header }}"
+  register: fad_glb_host_vsp_list_existing_data
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts_vsp_lists
+
+- name: Print out the existing value of GLB Host VSP List data ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.debug:
+    var: fad_glb_host_vsp_list_existing_data.json.payload
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts_vsp_lists
+    - debug
+
+- name: Write VSP request body json tmp file ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.copy:
+    content: |
+      {
+        "isp": "",
+        "topology": "",
+        "virtual-server-pool": "{{ item_vsp.pool_name }}",
+        "weight": "{{ item_vsp.weight }}"
+      }
+    dest: "/tmp/fad_{{ fad_glb_vsp_list_name }}_request_body.json"
+    mode: u+rw,g-rw,o-rw
+  register: request_body
+  delegate_to: localhost
+  run_once: true
+
+- name: Trying to create new GLB Host VSP list entry ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.uri:
+    method: POST
+    url: "{{ fad_api_endpoint_glb_host_vsp_lists }}"
+    body_format: "{{ fad_api_uri_params.body_format }}"
+    validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+    return_content: "{{ fad_api_uri_params.return_content }}"
+    status_code: "{{ fad_api_uri_params.status_code }}"
+    headers: "{{ fad_api_header }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
+  register: fad_glb_host_vsp_list_post_result
+  when: fad_glb_host_vsp_list_existing_data.json.payload.mkey is undefined
+  delegate_to: localhost
+  changed_when: "fad_glb_host_vsp_list_post_result.json.payload == 0"
+  failed_when: "fad_glb_host_vsp_list_post_result.json.payload != -15 and fad_glb_host_vsp_list_post_result.json.payload != 0"
+
+- name: Update the GLB Host entry if the entry exist ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.uri:
+    method: PUT
+    url: "{{ fad_api_endpoint_glb_host_vsp_lists }}"
+    body_format: "{{ fad_api_uri_params.body_format }}"
+    validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+    return_content: "{{ fad_api_uri_params.return_content }}"
+    status_code: "{{ fad_api_uri_params.status_code }}"
+    headers: "{{ fad_api_header }}"
+    body: "{{ lookup('ansible.builtin.file', request_body.dest) }}"
+  register: fad_glb_host_vsp_list_put_result
+  delegate_to: localhost
+  when: >
+    (fad_glb_host_vsp_list_existing_data.json.payload['mkey'] is defined) and
+    (fad_glb_host_vsp_list_existing_data.json.payload['isp'] != vsp_list.isp or
+    fad_glb_host_vsp_list_existing_data.json.payload['topology'] != vsp_list.toplogy or
+    fad_glb_host_vsp_list_existing_data.json.payload['virtual-server-pool'] != vsp_list.pool_name or
+    fad_glb_host_vsp_list_existing_data.json.payload['weight'] != vsp_list.weight)
+  failed_when: "fad_glb_host_vsp_list_put_result.json.payload != -15 and fad_glb_host_vsp_list_put_result.json.payload != 0"
+  
+- name: Check if the data have changed ({{ fad_glb_vsp_list_name }}).
+  ansible.builtin.uri:
+    method: GET
+    url: "{{ fad_api_endpoint_glb_host_vsp_lists }}"
+    body_format: "{{ fad_api_uri_params.body_format }}"
+    validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+    return_content: "{{ fad_api_uri_params.return_content }}"
+    status_code: "{{ fad_api_uri_params.status_code }}"
+    headers: "{{ fad_api_header }}"
+  register: fad_glb_host_vsp_list_new_data
+  changed_when: "fad_glb_host_vsp_list_new_data.json.payload != fad_glb_host_vsp_list_existing_data.json.payload"
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts_vsp_lists
+
+- name: Print out the new value of GLB Host VSP List data ({{ fad_glb_host_vsp_list_name }}).
+  ansible.builtin.debug:
+    var: fad_glb_host_vsp_list_new_data.json.payload
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts_vsp_lists
+    - debug

@@ -87,7 +87,7 @@
   register: fad_glb_host_put_result
   delegate_to: localhost
   when: >
-    (fad_glb_host_existing_data.json.payload[mkey] is defined) and
+    (fad_glb_host_existing_data.json.payload['mkey'] is defined) and
     (fad_glb_host_existing_data.json.payload['default-feedback-ip'] != host.default_ipv4 or
     fad_glb_host_existing_data.json.payload['default-feedback-ip6'] != host.default_ipv6 or
     fad_glb_host_existing_data.json.payload['host-name'] != host.hostname or

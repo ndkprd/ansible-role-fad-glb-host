@@ -14,3 +14,13 @@
     loop_var: host
   tags:
     - fad_glb_hosts
+
+- name: Test Host setup using dig.
+  ansible.builtin.command: >
+    dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
+  register: dns_result
+  ignore_errors: yes
+
+- name: Debug out test result.
+  ansible.builtin.debug:
+    var: dns_result

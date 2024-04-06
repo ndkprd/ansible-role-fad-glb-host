@@ -110,6 +110,7 @@
 - name: Print out the new value of GLB Host VSP List data ({{ fad_glb_host_vsp_list_name }}).
   ansible.builtin.debug:
     var: fad_glb_host_vsp_list_new_data.json.payload
+    var: vsp_list
   delegate_to: localhost
   tags:
     - fad_glb_hosts_vsp_lists

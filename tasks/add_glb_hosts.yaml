@@ -48,7 +48,7 @@
         "persistence": "{{ host.persistence }}",
         "respond-single-record": "{{ host.respond_single_record }}"
       }
-    dest: "/tmp/fad_glb_host_{{ fad_glb_host_name }}_request_body.json"
+    dest: "/tmp/fad_glb_host_{{ host.name }}_request_body.json"
     mode: u+rw,g-rw,o-rw
   register: request_body
   delegate_to: localhost

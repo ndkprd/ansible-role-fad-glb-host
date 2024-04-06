@@ -35,7 +35,7 @@
     - fad_glb_hosts_vsp_lists
     - debug
 
-- name: Write VSP request body json tmp file ({{ fad_glb_vsp_list_name }}).
+- name: Write VSP List request body json tmp file ({{ fad_glb_vsp_list_name }}).
   ansible.builtin.copy:
     content: |
       {
@@ -44,11 +44,13 @@
         "virtual-server-pool": "{{ vsp_list.pool_name }}",
         "weight": "{{ vsp_list.weight }}"
       }
-    dest: "/tmp/fad_glb_host_vsp_list_{{ fad_glb_vsp_list_name }}_request_body.json"
+    dest: "/tmp/fad_glb_host_vsp_list_{{ host.name }}_{{ vsp_pool.pool_name }} request_body.json"
     mode: u+rw,g-rw,o-rw
   register: request_body
   delegate_to: localhost
   run_once: true
+  tags:
+    - fad_glb_hosts_vsp_lists
 
 - name: Trying to create new GLB Host VSP list entry ({{ fad_glb_vsp_list_name }}).
   ansible.builtin.uri:
@@ -65,6 +67,8 @@
   delegate_to: localhost
   changed_when: "fad_glb_host_vsp_list_post_result.json.payload == 0"
   failed_when: "fad_glb_host_vsp_list_post_result.json.payload != -15 and fad_glb_host_vsp_list_post_result.json.payload != 0"
+  tags:
+    - fad_glb_hosts_vsp_lists
 
 - name: Update the GLB Host entry if the entry exist ({{ fad_glb_vsp_list_name }}).
   ansible.builtin.uri:
@@ -85,7 +89,9 @@
     fad_glb_host_vsp_list_existing_data.json.payload['virtual-server-pool'] != vsp_list.pool_name or
     fad_glb_host_vsp_list_existing_data.json.payload['weight'] != vsp_list.weight)
   failed_when: "fad_glb_host_vsp_list_put_result.json.payload != -15 and fad_glb_host_vsp_list_put_result.json.payload != 0"
-  
+  tags:
+    - fad_glb_hosts_vsp_lists
+
 - name: Check if the data have changed ({{ fad_glb_vsp_list_name }}).
   ansible.builtin.uri:
     method: GET

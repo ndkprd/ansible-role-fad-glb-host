@@ -21,6 +21,7 @@
   register: dns_result
   ignore_errors: yes
   loop: "{{ fad_glb_hosts }}"
+  delegate_to: localhost
   loop_control:
     loop_var: host
 

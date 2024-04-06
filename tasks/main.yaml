@@ -5,6 +5,7 @@
 #     name: ndkprd.fortiadc-glb-vsp
 #   tags:
 #     - fad_glb_hosts
+# I don't know that dependencies are automatically run, lol.
 
 - name: Include the add GLB host task.
   ansible.builtin.include_tasks: add_glb_hosts.yaml

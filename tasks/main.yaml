@@ -1,10 +1,10 @@
 ---
 
-- name: Setup Data Center, Servers, and VSP using role.
-  ansible.builtin.include_role:
-    name: ndkprd.fortiadc-glb-vsp
-  tags:
-    - fad_glb_hosts
+# - name: Setup Data Center, Servers, and VSP using role.
+#   ansible.builtin.include_role:
+#     name: ndkprd.fortiadc-glb-vsp
+#   tags:
+#     - fad_glb_hosts
 
 - name: Include the add GLB host task.
   ansible.builtin.include_tasks: add_glb_hosts.yaml

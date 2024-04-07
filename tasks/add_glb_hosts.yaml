@@ -155,3 +155,8 @@
   tags:
     - fad_glb_hosts
     - debug
+
+- name: Try to resolve the GLB Host against Google for {{ host.hostname }}.{{ host.domain }}
+  ansible.builtin.include_tasks: test_dns_result.yaml
+  tags:
+    - fad_glb_hosts

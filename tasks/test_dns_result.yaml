@@ -1,10 +1,18 @@
-# ---
-# - name: Test Host setup using dig against ({{ host.hostname }}.{{ host.domain }}).
-#   ansible.builtin.command: >
-#     dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
-#   register: dns_result
-#   delegate_to: localhost
+---
+- name: Test Host setup using dig against ({{ host.hostname }}.{{ host.domain }}).
+  ansible.builtin.command: >
+    dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
+  register: dns_result
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts
+  until: dns_result.stdout | regex_search('\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b') | default(false)
+  wait_for: timeout=10
+  retries: 5
+  delay: 5
 
-# - name: Debug out test result.
-#   ansible.builtin.debug:
-#     var: dns_result.stdout
+- name: Debug out test result.
+  ansible.builtin.debug:
+    var: dns_result.stdout
+  tags:
+    - fad_glb_hosts

@@ -1,7 +1,8 @@
 ---
-- name: Test Host setup using dig against ({{ host.hostname }}.{{ host.domain }}).
+
+- name: Test Host setup using dig against {{ host.hostname }}.{{ host.domain }}
   ansible.builtin.command: >
-    dig +short {{ host.hostname }}.{{ host.domain }} @8.8.8.8
+    dig +short "{{ host.hostname }}.{{ host.domain }}"" @8.8.8.8
   register: dns_result
   delegate_to: localhost
   tags:

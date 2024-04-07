@@ -56,6 +56,13 @@
   tags:
     - fad_glb_hosts
 
+- name: Compare the existing value from the device and the desired value from the variables for ({{ fad_glb_host_name }})
+  ansible.builtin.debug:
+    msg: "EXISTING VALUE: {{ fad_glb_host_existing_data.json.payload }} vs DESIRED VALUE: {{ host }}"
+  tags:
+    - fad_glb_hosts
+    - debug
+
 - name: Create new GLB Host entry if entry don't exists yet ({{ fad_glb_host_name }}).
   ansible.builtin.uri:
     method: POST

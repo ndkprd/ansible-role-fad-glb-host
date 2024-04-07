@@ -39,6 +39,7 @@
   ansible.builtin.copy:
     content: |
       {
+        "mkey": "{{ vsp_list.id }}",
         "isp": "{{ vsp_list.isp }}",
         "topology": "{{ vsp_list.topology }}",
         "virtual-server-pool": "{{ vsp_list.pool_name }}",

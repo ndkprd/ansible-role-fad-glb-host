@@ -43,7 +43,7 @@
         "default-feedback-ip": "{{ host.default_ipv4 }}",
         "default-feedback-ip6": "{{ host.default_ipv6 }}",
         "host-name": "{{ host.hostname }}",
-        "domain-name": "{{ host.domain }}.",
+        "domain-name": "{{ host.domain }}",
         "fortiview": "{{ host.fortiview }}",
         "load-balance-method": "{{ host.load_balance_method }}",
         "persistence": "{{ host.persistence }}",

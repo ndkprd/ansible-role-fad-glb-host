@@ -39,6 +39,7 @@
   ansible.builtin.copy:
     content: |
       {
+        "mkey": "{{ host.name }}",
         "default-feedback-ip": "{{ host.default_ipv4 }}",
         "default-feedback-ip6": "{{ host.default_ipv6 }}",
         "host-name": "{{ host.hostname }}",

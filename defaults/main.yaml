@@ -114,3 +114,15 @@ fad_glb_hosts:
       - mkey: DC2
         pool_name: waf.dc2.ndkprd.com
         weight: "1"
+
+fad_dns_policy:
+  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
+    source_address: "any" # valid Address Group entry mkey used as source
+    destination_address: "any" # valid Address Group entry used as destination
+    dns64_list: ""
+    dnssec_validate_status: "disable" # "enable" or "disable"
+    forward: "first" # "first" or "only"
+    forwarders: "" # valid Remote DNS Servers entry mkey
+    recursion_status: "disable" # "enable" or "disable"
+    rrlimit: "" # valid Response Rate Limit 
+    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only

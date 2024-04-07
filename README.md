@@ -37,6 +37,8 @@ fad2.ndkprd.com ansible_host=fad2.ndkprd.com fad_apitoken=mysupersecrettoken
 
 ```
 ---
+# vars.yaml
+
 fad_vdom: root
 
 fad_glb_data_centers:
@@ -159,6 +161,19 @@ fad_glb_hosts:
         pool_name: waf.dc2.ndkprd.com
         weight: "1"
 
+fad_dns_policy:
+  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
+    source_address: "any" # valid Address Group entry mkey used as source
+    destination_address: "any" # valid Address Group entry used as destination
+    dns64_list: ""
+    dnssec_validate_status: "disable" # "enable" or "disable"
+    forward: "first" # "first" or "only"
+    forwarders: "" # valid Remote DNS Servers entry mkey
+    recursion_status: "disable" # "enable" or "disable"
+    rrlimit: "" # valid Response Rate Limit 
+    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only
+
+
 ```
 
 ### Playbook Example
@@ -172,7 +187,7 @@ fad_glb_hosts:
   become: true
   gather_facts: no
   vars_files:
-    - ./fad-glb-host-vars.yaml
+    - ./vars.yaml
 
   roles:
     - ndkprd.fortiadc-glb-host

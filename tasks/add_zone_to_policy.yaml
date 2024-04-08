@@ -43,7 +43,7 @@
       }
   delegate_to: localhost
   register: fad_dns_policy_new_data
-  when: "'{{ host.name }}' is in fad_dns_policy_existing_data.json.payload.zone_list"
+  when: "host.name is in fad_dns_policy_existing_data.json.payload.zone_list"
   tags:
     - fad_glb_hosts
 

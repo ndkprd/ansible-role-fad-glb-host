@@ -125,6 +125,7 @@
   delegate_to: localhost
   tags:
     - fad_glb_hosts
+    - debug
 
 - name: Print out the new value of GLB Host data for {{ fad_glb_host_name }}
   ansible.builtin.debug:

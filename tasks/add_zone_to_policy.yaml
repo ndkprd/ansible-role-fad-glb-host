@@ -28,11 +28,12 @@
     - fad_glb_hosts
     - debug
 
-- name: Create new zone_list for {{ fad_glb_host_name }}
+- name: Check the value of the new zone_list for {{ fad_glb_host_name }}
   ansible.builtin.set_fact:
     new_zone_list: "{{ fad_dns_policy_existing_data.json.payload.zone_list }}fqdn_generate_{{ host.domain }}"
   tags:
     - fad_glb_hosts
+    - debug
 
 - name: Debug out new zone list {{ fad_glb_host_name }}
   ansible.builtin.debug:
@@ -41,7 +42,7 @@
     - fad_glb_hosts
     - debug
 
-- name: Insert current GLB host zone if it doesn't included yet for {{ fad_glb_host_name }}
+- name: Insert current GLB host zone to the DNS if it hasn't included yet for {{ fad_glb_host_name }}
   ansible.builtin.uri:
     method: PUT
     url: "{{ fad_api_endpoint_dns_policy }}"
@@ -52,7 +53,7 @@
     headers: "{{ fad_api_header }}"
     body: |
       {
-        "zone_list": "{{ new_zone_list }} "
+        "zone_list": "{{ fad_dns_policy_existing_data.json.payload.zone_list }}fqdn_generate_{{ host.domain }} "
       }
   delegate_to: localhost
   register: fad_dns_policy_new_data

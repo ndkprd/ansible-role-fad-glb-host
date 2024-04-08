@@ -2,6 +2,7 @@
 
 dependencies:
   - ndkprd.fortiadc-glb-vs-pools
+  - ndkprd.fortiadc-dns-policy
 
 galaxy_info:
   author: ndkprd

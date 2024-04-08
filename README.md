@@ -49,6 +49,18 @@ fad_glb_data_centers:
   - name: dc2.ndkprd.com
     location: ID
 
+fad_dns_policy:
+  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
+    source_address: "any" # valid Address Group entry mkey used as source
+    destination_address: "any" # valid Address Group entry used as destination
+    dns64_list: ""
+    dnssec_validate_status: "disable" # "enable" or "disable"
+    forward: "first" # "first" or "only"
+    forwarders: "" # valid Remote DNS Servers entry mkey
+    recursion_status: "disable" # "enable" or "disable"
+    rrlimit: "" # valid Response Rate Limit 
+    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only
+
 fad_glb_servers:
   - name: "dmz.hq.ndkprd.com" # GLB Server name/mkey
     data_center: "hq.ndkprd.com" # Data Center name, must exists first
@@ -138,10 +150,16 @@ fad_glb_vs_pools:
         server_member_name: public-waf-2.dc1.ndkprd.com
 
 fad_glb_hosts:
-  - hostname: repo # hostname without domain
+  - name: public_repo.devops.ndkprd.com # GLB Host mkey
+    hostname: repo # hostname without domain
     domain: devops.ndkprd.com # base domain without dot
-    scope: public # for naming purpose naming only, I personally use "public" and "local"
     default_ipv4: "0.0.0.0" # default IP when none of virtual server work
+    default_ipv6: "::"
+    fortiview: enable
+    load_balance_method: "weight"
+    persistence: enable
+    respond_single_record: enable
+    dns_policy: "DEFAULT_DNS_POLICY" # valid DNS Policy mkey
     vsp_lists:
       - mkey: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
@@ -149,30 +167,6 @@ fad_glb_hosts:
       - mkey: DC2
         pool_name: waf.dc2.ndkprd.com
         weight: "1"
-  - hostname: sonarqube
-    domain: devops.ndkprd.com
-    scope: public
-    default_ipv4: "0.0.0.0"
-    vsp_lists:
-      - mkey: DC1
-        pool_name: waf.dc1.ndkprd.com
-        weight: "100"
-      - mkey: DC2
-        pool_name: waf.dc2.ndkprd.com
-        weight: "1"
-
-fad_dns_policy:
-  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
-    source_address: "any" # valid Address Group entry mkey used as source
-    destination_address: "any" # valid Address Group entry used as destination
-    dns64_list: ""
-    dnssec_validate_status: "disable" # "enable" or "disable"
-    forward: "first" # "first" or "only"
-    forwarders: "" # valid Remote DNS Servers entry mkey
-    recursion_status: "disable" # "enable" or "disable"
-    rrlimit: "" # valid Response Rate Limit 
-    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only
-
 
 ```
 

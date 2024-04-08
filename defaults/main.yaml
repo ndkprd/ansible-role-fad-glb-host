@@ -1,6 +1,18 @@
 ---
 fad_vdom: root
 
+fad_dns_policy:
+  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
+    source_address: "any" # valid Address Group entry mkey used as source
+    destination_address: "any" # valid Address Group entry used as destination
+    dns64_list: ""
+    dnssec_validate_status: "disable" # "enable" or "disable"
+    forward: "first" # "first" or "only"
+    forwarders: "" # valid Remote DNS Servers entry mkey
+    recursion_status: "disable" # "enable" or "disable"
+    rrlimit: "" # valid Response Rate Limit 
+    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only
+
 fad_glb_data_centers:
   - name: hq.ndkprd.com  # Data Center name/mkey
     location: ID  # 2 letters country ID
@@ -107,6 +119,7 @@ fad_glb_hosts:
     load_balance_method: "weight"
     persistence: enable
     respond_single_record: enable
+    dns_policy: "DEFAULT_DNS_POLICY" # valid DNS Policy mkey
     vsp_lists:
       - mkey: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
@@ -115,14 +128,3 @@ fad_glb_hosts:
         pool_name: waf.dc2.ndkprd.com
         weight: "1"
 
-fad_dns_policy:
-  - name: "DEFAULT_DNS_POLICY" # Global DNS Policy mkey
-    source_address: "any" # valid Address Group entry mkey used as source
-    destination_address: "any" # valid Address Group entry used as destination
-    dns64_list: ""
-    dnssec_validate_status: "disable" # "enable" or "disable"
-    forward: "first" # "first" or "only"
-    forwarders: "" # valid Remote DNS Servers entry mkey
-    recursion_status: "disable" # "enable" or "disable"
-    rrlimit: "" # valid Response Rate Limit 
-    zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only

@@ -133,3 +133,8 @@
   tags:
     - fad_glb_hosts
     - debug
+
+- name: Add GLB Host's Zone to DNS Policy if it hasn't for {{ fad_glb_host_name }}
+  ansible.builtin.include_tasks: add_zone_to_policy.yaml
+  tags:
+    - fad_glb_hosts

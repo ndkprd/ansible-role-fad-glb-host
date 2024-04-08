@@ -28,9 +28,9 @@
     - fad_glb_hosts
     - debug
 
-- name: Check the value of the new zone_list for {{ fad_glb_host_name }}
+- name: Create the new zone_list for {{ fad_glb_host_name }}
   ansible.builtin.set_fact:
-    new_zone_list: "{{ fad_dns_policy_existing_data.json.payload.zone_list }}fqdn_generate_{{ host.domain }}"
+    new_zone_list: "{{ fad_dns_policy_existing_data.json.payload.zone_list }}fqdn_generate_{{ host.domain }} "
   tags:
     - fad_glb_hosts
     - debug
@@ -82,7 +82,7 @@
 
 - name: Print out the current zone_list value for {{ fad_glb_host_name }}
   ansible.builtin.debug:
-    var: fad_dns_policy_existing_data.json.payload.zone_list
+    var: fad_dns_policy_new_data.json.payload.zone_list
   tags:
     - fad_glb_hosts
     - debug

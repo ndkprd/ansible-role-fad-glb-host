@@ -6,6 +6,16 @@
   tags:
     - fad_glb_hosts
 
+- name: Do initial DNS check against {{ host.name }}.{{ host.domain }}
+  ansible.builtin.command: >
+    dig +short "{{ host.name }}.{{ host.domain }}" @8.8.8.8
+  register: dns_existing_result
+  delegate_to: localhost
+  tags:
+    - fad_glb_hosts
+  ignore_errors: true
+  changed_when: false
+
 - name: Print out the GLB Hosts REST API endpoint for {{ fad_glb_host_name }}
   ansible.builtin.debug:
     msg: "Current endpoint: {{ fad_api_endpoint_glb_hosts }}"
@@ -34,28 +44,6 @@
   tags:
     - fad_glb_hosts
     - debug
-
-# - name: Write GLB Hosts request body json tmp file ({{ fad_glb_host_name }}).
-#   ansible.builtin.copy:
-#     content: |
-#       {
-#         "mkey": "{{ host.name }}",
-#         "default-feedback-ip": "{{ host.default_ipv4 }}",
-#         "default-feedback-ip6": "{{ host.default_ipv6 }}",
-#         "host-name": "{{ host.hostname }}",
-#         "domain-name": "{{ host.domain }}",
-#         "fortiview": "{{ host.fortiview }}",
-#         "load-balance-method": "{{ host.load_balance_method }}",
-#         "persistence": "{{ host.persistence }}",
-#         "respond-single-record": "{{ host.respond_single_record }}"
-#       }
-#     dest: "/tmp/fad_glb_host_{{ host.name }}_request_body.json"
-#     mode: u+rw,g-rw,o-rw
-#   register: request_body
-#   delegate_to: localhost
-#   run_once: true
-#   tags:
-#     - fad_glb_hosts
 
 - name: Write the GLB Host request body json for {{ fad_glb_host_name }}
   ansible.builtin.set_fact:

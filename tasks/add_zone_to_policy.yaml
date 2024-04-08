@@ -42,7 +42,7 @@
     - fad_glb_hosts
     - debug
 
-- name: Insert current GLB host zone to the DNS if it hasn't included yet for {{ fad_glb_host_name }}
+- name: Insert current GLB host zone to the DNS Policy zone list {{ fad_glb_host_name }}
   ansible.builtin.uri:
     method: PUT
     url: "{{ fad_api_endpoint_dns_policy }}"
@@ -57,7 +57,7 @@
       }
   delegate_to: localhost
   register: fad_dns_policy_put_result
-  when: host.domain is not in fad_dns_policy_existing_data.json.payload.zone_list
+  #when: host.domain is not in fad_dns_policy_existing_data.json.payload.zone_list
   failed_when: >
     (fad_dns_policy_put_result.json.payload != -15) and
     (fad_dns_policy_put_result.json.payload != 0)

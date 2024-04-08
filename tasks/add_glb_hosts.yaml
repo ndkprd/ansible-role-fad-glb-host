@@ -43,7 +43,7 @@
         "default-feedback-ip": "{{ host.default_ipv4 }}",
         "default-feedback-ip6": "{{ host.default_ipv6 }}",
         "host-name": "{{ host.hostname }}",
-        "domain-name": "{{ host.domain }}",
+        "domain-name": "{{ host.domain }}.",
         "fortiview": "{{ host.fortiview }}",
         "load-balance-method": "{{ host.load_balance_method }}",
         "persistence": "{{ host.persistence }}",
@@ -94,7 +94,6 @@
     (fad_glb_host_existing_data.json.payload['default-feedback-ip'] != host.default_ipv4 or
     fad_glb_host_existing_data.json.payload['default-feedback-ip6'] != host.default_ipv6 or
     fad_glb_host_existing_data.json.payload['host-name'] != host.hostname or
-    fad_glb_host_existing_data.json.payload['domain-name'] != host.domain or
     fad_glb_host_existing_data.json.payload['fortiview'] != host.fortiview or
     fad_glb_host_existing_data.json.payload['load-balance-method'] != host.load_balance_method or
     fad_glb_host_existing_data.json.payload['persistence'] != host.persistence or

@@ -1,12 +1,5 @@
 ---
 
-# - name: Setup Data Center, Servers, and VSP using role.
-#   ansible.builtin.include_role:
-#     name: ndkprd.fortiadc-glb-vsp
-#   tags:
-#     - fad_glb_hosts
-# I don't know that dependencies are automatically run, lol.
-
 - name: Include the add GLB host task.
   ansible.builtin.include_tasks: add_glb_hosts.yaml
   loop: "{{ fad_glb_hosts }}"
@@ -14,9 +7,3 @@
     loop_var: host
   tags:
     - fad_glb_hosts
-
-# - name: Test Host setup using dig.
-#   ansible.builtin.include_tasks: test_dns_result.yaml
-#   loop: "{{ fad_glb_hosts }}"
-#   loop_control:
-#     loop_var: host

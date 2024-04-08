@@ -6,16 +6,6 @@
   tags:
     - fad_glb_hosts
 
-- name: Do initial DNS check against {{ host.name }}.{{ host.domain }}
-  ansible.builtin.command: >
-    dig +short "{{ host.name }}.{{ host.domain }}" @8.8.8.8
-  register: dns_existing_result
-  delegate_to: localhost
-  tags:
-    - fad_glb_hosts
-  ignore_errors: true
-  changed_when: false
-
 - name: Print out the GLB Hosts REST API endpoint for {{ fad_glb_host_name }}
   ansible.builtin.debug:
     msg: "Current endpoint: {{ fad_api_endpoint_glb_hosts }}"
@@ -143,8 +133,3 @@
   tags:
     - fad_glb_hosts
     - debug
-
-- name: Try to resolve the GLB Host against Google for {{ host.hostname }}.{{ host.domain }}
-  ansible.builtin.include_tasks: test_dns_result.yaml
-  tags:
-    - fad_glb_hosts

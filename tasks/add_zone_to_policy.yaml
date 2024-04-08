@@ -39,7 +39,7 @@
     headers: "{{ fad_api_header }}"
     body: |
       {
-        "zone_list": "{{ fad_dns_policy_existing_data.json.payload.zone_list }} host.name "
+        "zone_list": "{{ fad_dns_policy_existing_data.json.payload.zone_list }}{{ host.name }} "
       }
   delegate_to: localhost
   register: fad_dns_policy_new_data

@@ -56,8 +56,11 @@
         "zone_list": "{{ fad_dns_policy_existing_data.json.payload.zone_list }}fqdn_generate_{{ host.domain }} "
       }
   delegate_to: localhost
-  register: fad_dns_policy_new_data
+  register: fad_dns_policy_put_result
   when: host.domain is not in fad_dns_policy_existing_data.json.payload.zone_list
+  failed_when: >
+    (fad_dns_policy_put_result.json.payload != -15) and
+    (fad_dns_policy_put_result.json.payload != 0)
   tags:
     - fad_glb_hosts
 

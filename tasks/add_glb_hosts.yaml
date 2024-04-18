@@ -91,13 +91,15 @@
   delegate_to: localhost
   when: >
     (fad_glb_host_existing_data.json.payload['mkey'] is defined) and
-    (fad_glb_host_existing_data.json.payload['default-feedback-ip'] != host.default_ipv4 or
-    fad_glb_host_existing_data.json.payload['default-feedback-ip6'] != host.default_ipv6 or
+    (
+    fad_glb_host_existing_data.json.payload['default-feedback-ip'] != host.default_ipv4 | default('0.0.0.0') | string or
+    fad_glb_host_existing_data.json.payload['default-feedback-ip6'] != host.default_ipv6 | default('::') | string or
     fad_glb_host_existing_data.json.payload['host-name'] != host.hostname or
-    fad_glb_host_existing_data.json.payload['fortiview'] != host.fortiview or
-    fad_glb_host_existing_data.json.payload['load-balance-method'] != host.load_balance_method or
-    fad_glb_host_existing_data.json.payload['persistence'] != host.persistence or
-    fad_glb_host_existing_data.json.payload['respond-single-record'] != host.respond_single_record)
+    fad_glb_host_existing_data.json.payload['fortiview'] != host.fortiview | default('enable') or
+    fad_glb_host_existing_data.json.payload['load-balance-method'] != host.load_balance_method | default('weight') or
+    fad_glb_host_existing_data.json.payload['persistence'] != host.persistence | default('enable') or
+    fad_glb_host_existing_data.json.payload['respond-single-record'] != host.respond_single_record | default('enable')
+    )
   failed_when: "fad_glb_host_put_result.json.payload != -15 and fad_glb_host_put_result.json.payload != 0"
   tags:
     - fad_glb_hosts

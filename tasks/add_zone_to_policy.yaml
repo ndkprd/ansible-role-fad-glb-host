@@ -2,7 +2,7 @@
 
 - name: Set FAD DNS Policy REST API endpoint for {{ fad_glb_host_name }}
   ansible.builtin.set_fact:
-    fad_api_endpoint_dns_policy: https://{{ ansible_host }}/api/global_dns_server_policy?vdom={{ fad_vdom }}&mkey={{ host.dns_policy }}
+    fad_api_endpoint_dns_policy: https://{{ ansible_host }}/api/global_dns_server_policy?vdom={{ fad_vdom }}&mkey={{ host.dns_policy | default('DEFAULT_DNS_POLICY') }}
   delegate_to: localhost
   tags:
     - fad_glb_hosts

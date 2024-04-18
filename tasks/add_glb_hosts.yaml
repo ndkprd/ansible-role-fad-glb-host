@@ -40,14 +40,14 @@
     request_body: |
       {
         "mkey": "{{ host.name }}",
-        "default-feedback-ip": "{{ host.default_ipv4 }}",
-        "default-feedback-ip6": "{{ host.default_ipv6 }}",
+        "default-feedback-ip": "{{ host.default_ipv4 | default('0.0.0.0') | string }}",
+        "default-feedback-ip6": "{{ host.default_ipv6 | default('::') | string }}",
         "host-name": "{{ host.hostname }}",
         "domain-name": "{{ host.domain }}.",
-        "fortiview": "{{ host.fortiview }}",
-        "load-balance-method": "{{ host.load_balance_method }}",
-        "persistence": "{{ host.persistence }}",
-        "respond-single-record": "{{ host.respond_single_record }}"
+        "fortiview": "{{ host.fortiview | default('enable') }}",
+        "load-balance-method": "{{ host.load_balance_method | default('weight') }}",
+        "persistence": "{{ host.persistence | default('enable') }}",
+        "respond-single-record": "{{ host.respond_single_record | default('enable') }}"
       }
   tags:
     - fad_glb_hosts

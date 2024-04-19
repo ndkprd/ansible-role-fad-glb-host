@@ -1,7 +1,7 @@
-- name: Set fact for GLB Host for {{ host.name }}
+- name: Set fact for GLB Host for {{ host.name | default(host.hostname + '.' + host.domain) }}
   ansible.builtin.set_fact:
-    fad_api_endpoint_glb_hosts: https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ host.name }}
-    fad_glb_host_name: "{{ host.name }}"
+    fad_api_endpoint_glb_hosts: https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ host.name | default(host.hostname + '.' + host.domain) }}
+    fad_glb_host_name: "{{ host.name | default(host.hostname + '.' + host.domain) }}"
   delegate_to: localhost
   tags:
     - fad_glb_hosts
@@ -39,7 +39,7 @@
   ansible.builtin.set_fact:
     request_body: |
       {
-        "mkey": "{{ host.name | default(host.hostname + '.' + host.domain) }}",
+        "mkey": "{{ host.name | default(host.hostname + '.' + host.domain) | default(host.hostname + '.' + host.domain) }}",
         "default-feedback-ip": "{{ host.default_ipv4 | default('0.0.0.0') | string }}",
         "default-feedback-ip6": "{{ host.default_ipv6 | default('::') | string }}",
         "host-name": "{{ host.hostname }}",

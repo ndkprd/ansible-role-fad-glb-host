@@ -39,7 +39,7 @@
   ansible.builtin.set_fact:
     request_body: |
       {
-        "mkey": "{{ host.name | default(host.hostname + '.' + host.domain) | default(host.hostname + '.' + host.domain) }}",
+        "mkey": "{{ host.name | default(host.hostname + '.' + host.domain) }}",
         "default-feedback-ip": "{{ host.default_ipv4 | default('0.0.0.0') | string }}",
         "default-feedback-ip6": "{{ host.default_ipv6 | default('::') | string }}",
         "host-name": "{{ host.hostname }}",

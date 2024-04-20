@@ -15,7 +15,6 @@
       "persistence": "{{ host.persistence | default('enable') }}",
       "respond-single-record": "{{ host.respond_single_record | default('enable') }}"
       }
-  delegate_to: localhost
 
 - name: Print out the GLB Hosts REST API endpoint for {{ fad_glb_host_name }}
   ansible.builtin.debug:
@@ -33,12 +32,10 @@
     status_code: "{{ fad_api_uri_params.status_code }}"
     headers: "{{ fad_api_header }}"
   register: fad_glb_host_existing_data
-  delegate_to: localhost
 
 - name: Print out the existing value of GLB Host data ({{ fad_glb_host_name }}).
   ansible.builtin.debug:
     var: fad_glb_host_existing_data.json.payload
-  delegate_to: localhost
   tags:
     - debug
 
@@ -60,7 +57,6 @@
     body: "{{ fad_glb_host_request_body }}"
   register: fad_glb_host_post_result
   when: fad_glb_host_existing_data.json.payload.mkey is undefined
-  delegate_to: localhost
   changed_when: "fad_glb_host_post_result.json.payload == 0"
   failed_when: "fad_glb_host_post_result.json.payload != -15 and fad_glb_host_post_result.json.payload != 0"
 
@@ -75,7 +71,6 @@
     headers: "{{ fad_api_header }}"
     body: "{{ fad_glb_host_request_body }}"
   register: fad_glb_host_put_result
-  delegate_to: localhost
   when: >
     (fad_glb_host_existing_data.json.payload['mkey'] is defined) and
     (
@@ -110,14 +105,12 @@
     headers: "{{ fad_api_header }}"
   register: fad_glb_host_new_data
   changed_when: "fad_glb_host_new_data.json.payload != fad_glb_host_existing_data.json.payload"
-  delegate_to: localhost
   tags:
     - debug
 
 - name: Print out the new value of GLB Host data for {{ fad_glb_host_name }}
   ansible.builtin.debug:
     var: fad_glb_host_new_data.json.payload
-  delegate_to: localhost
   tags:
     - debug
 

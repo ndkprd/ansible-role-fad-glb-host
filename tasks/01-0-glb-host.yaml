@@ -1,6 +1,7 @@
 - name: Set fact for GLB Host for {{ host.name | default(host.hostname + '.' + host.domain) }}
   ansible.builtin.set_fact:
-    fad_api_endpoint_glb_hosts: https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ host.name | default(host.hostname + '.' + host.domain) }}
+    fad_api_endpoint_glb_hosts: >
+      https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ host.name | default(host.hostname + '.' + host.domain) }}
     fad_glb_host_name: "{{ host.name | default(host.hostname + '.' + host.domain) }}"
   delegate_to: localhost
   tags:
@@ -105,7 +106,7 @@
     - fad_glb_hosts
 
 - name: Include the GLB Host VSP Lists task {{ fad_glb_host_name }}
-  ansible.builtin.include_tasks: add_glb_hosts_vsp_lists.yaml
+  ansible.builtin.include_tasks: 01-a-glb-host-vsp-list.yaml
   loop: "{{ host.vsp_lists }}"
   loop_control:
     loop_var: vsp_list
@@ -137,6 +138,6 @@
     - debug
 
 - name: Add GLB Host's Zone to DNS Policy if it hasn't for {{ fad_glb_host_name }}
-  ansible.builtin.include_tasks: add_zone_to_policy.yaml
+  ansible.builtin.include_tasks: 01-b-dns-policy-zone-list.yaml
   tags:
     - fad_glb_hosts

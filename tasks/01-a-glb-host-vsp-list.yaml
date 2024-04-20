@@ -1,8 +1,8 @@
 - name: Set fact for GLB Host VSP List {{ vsp_list.pool_name }}
   ansible.builtin.set_fact:
-    fad_api_endpoint_glb_host_vsp_lists: >-
-      https://{{ ansible_host }}/api/global_load_balance_host_child_virtual_server_pool_list
-      ?vdom={{ fad_vdom }}&pkey={{ fad_glb_host_name }}&mkey={{ vsp_list.mkey }}
+    fad_api_endpoint_glb_host_vsp_lists:
+      "https://{{ ansible_host }}/api/global_load_balance_host_child_virtual_server_pool_list?\
+      vdom={{ fad_vdom }}&pkey={{ fad_glb_host_name }}&mkey={{ vsp_list.mkey }}"
     fad_glb_host_vsp_list_name: "{{ fad_glb_host_name }}/{{ vsp_list.pool_name }}"
     fad_glb_host_vsp_list_request_body: |
       {

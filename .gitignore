@@ -1,0 +1,4 @@
+.vscode
+examples/fortiadc-glb-hosts.yaml
+examples/group_vars
+examples/hosts

@@ -121,10 +121,9 @@ fad_glb_hosts:
     respond_single_record: enable
     dns_policy: "DEFAULT_DNS_POLICY" # valid DNS Policy mkey
     vsp_lists:
-      - mkey: DC1 # vsp_list mkey
+      - name: DC1 # vsp_list mkey
         pool_name: waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
         weight: "100" # VS pool weight
-      - mkey: DC2
+      - name: DC2
         pool_name: waf.dc2.ndkprd.com
         weight: "1"
-

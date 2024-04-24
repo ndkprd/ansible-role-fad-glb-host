@@ -1,0 +1,107 @@
+---
+
+- name: Update/create FortiADC GLB Resources.
+  hosts: all
+  become: false
+  gather_facts: false
+  connection: local
+  vars:
+     # for testing-purpose only, to delete the created resources after. change to 'false' if you want the resource to stay.
+    do_cleanup: true
+    # global-load-balance data-center entries
+    fad_glb_data_centers:
+      - name: dc1.ndkprd.com
+        location: ID
+    # global-load-balance servers entries
+    fad_glb_servers:
+      - name: "dmz.dc1.ndkprd.com"
+        data_center: "dc1.ndkprd.com"
+        health_check_ctrl: enable
+        health_check_list: "LB_HLTHCK_ICMP "
+        health_check_relationship: OR
+        server_type: Generic-Host
+        auth_type: none
+        address_type: ipv4 # FAD address type
+        auto_sync: disable
+        fad_ipv4: "0.0.0.0"
+        fad_ipv6: "::"
+        fad_pass: ""
+        fad_port: "5858"
+        server_members:
+          - name: public-waf-1.dc1.ndkprd.com
+            ipv4: 10.10.1.1
+            ipv6: "::"
+            address_type: ipv4
+            gateway: ""
+            health_check_ctrl: disable
+            health_check_inherit: enable
+            health_check_list: ""
+            health_check_relationship: "OR"
+    # global-load-balance virtual-server-pool entries
+    fad_glb_vs_pools:
+      - name: public-waf.dc1.ndkprd.com # VS Pools mkey
+        check_server_status: enable # healthcheck
+        check_virtual_server_existent: disable
+        load_balance_method: wrr
+        vs_pool_members:
+          - id: 1001 # high number of ID for mkey
+            is_backup: disable # if enable, when healthcheck failed it will goes to this server
+            server: dmz.dc1.ndkprd.com # GLB Servers
+            server_member_name: public-waf-1.dc1.ndkprd.com # GLB Servers member
+            weight: 10
+
+  roles:
+    - ndkprd.fortiadc-glb-vs-pools
+
+  # clean-up tasks if you need to delete the resources you just create.
+  tasks:
+    - name: Clean up the created VS Pools resources.
+      ansible.builtin.uri:
+        method: DELETE
+        url: "https://{{ ansible_host }}/api/global_load_balance_virtual_server_pool?vdom={{ fad_vdom }}&mkey={{ item.name }}"
+        body_format: "{{ fad_api_uri_params.body_format }}"
+        validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+        return_content: "{{ fad_api_uri_params.return_content }}"
+        status_code: "{{ fad_api_uri_params.status_code }}"
+        headers: "{{ fad_api_header }}"
+      register: fad_glb_dc_existing_data
+      when: do_cleanup == 'true' | bool | default('false')
+      loop: "{{ fad_glb_vs_pools }}"
+      loop_control:
+        label: "{{ item.name }}"
+      tags:
+        - cleanup
+
+    - name: Clean up the created Servers resources.
+      ansible.builtin.uri:
+        method: DELETE
+        url: "https://{{ ansible_host }}/api/global_load_balance_servers?vdom={{ fad_vdom }}&mkey={{ item.name }}"
+        body_format: "{{ fad_api_uri_params.body_format }}"
+        validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+        return_content: "{{ fad_api_uri_params.return_content }}"
+        status_code: "{{ fad_api_uri_params.status_code }}"
+        headers: "{{ fad_api_header }}"
+      register: fad_glb_dc_existing_data
+      when: do_cleanup == 'true' | bool | default('false')
+      loop: "{{ fad_glb_servers }}"
+      loop_control:
+        label: "{{ item.name }}"
+      tags:
+        - cleanup
+
+    - name: Clean up the created Data Centers resources.
+      ansible.builtin.uri:
+        method: DELETE
+        url: "https://{{ ansible_host }}/api/global_load_balance_data_center?vdom={{ fad_vdom }}&mkey={{ item.name }}"
+        body_format: "{{ fad_api_uri_params.body_format }}"
+        validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+        return_content: "{{ fad_api_uri_params.return_content }}"
+        status_code: "{{ fad_api_uri_params.status_code }}"
+        headers: "{{ fad_api_header }}"
+      register: fad_glb_dc_existing_data
+      when: do_cleanup == 'true' | bool | default('false')
+      loop: "{{ fad_glb_data_centers }}"
+      loop_control:
+        label: "{{ item.name }}"
+      tags:
+        - cleanup

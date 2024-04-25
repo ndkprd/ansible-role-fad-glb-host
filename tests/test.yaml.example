@@ -51,10 +51,24 @@
             weight: 10
 
   roles:
-    - ndkprd.fortiadc-glb-vs-pools
+    - ../../ansible-role-fortiadc-glb-hosts
 
-  # clean-up tasks if you need to delete the resources you just create.
   tasks:
+    - name: Clean up the created GLB Host resources.
+      ansible.builtin.uri:
+        method: DELETE
+        url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.name }}"
+        body_format: "{{ fad_api_uri_params.body_format }}"
+        validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+        return_content: "{{ fad_api_uri_params.return_content }}"
+        status_code: "{{ fad_api_uri_params.status_code }}"
+        headers: "{{ fad_api_header }}"
+      when: is do_cleanup
+      loop: "{{ fad_glb_hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
+      tags: [cleanup, fad_glb_host]
+
     - name: Clean up the created VS Pools resources.
       ansible.builtin.uri:
         method: DELETE
@@ -64,13 +78,11 @@
         return_content: "{{ fad_api_uri_params.return_content }}"
         status_code: "{{ fad_api_uri_params.status_code }}"
         headers: "{{ fad_api_header }}"
-      register: fad_glb_dc_existing_data
-      when: do_cleanup == 'true' | bool | default('false')
+      when: is do_cleanup
       loop: "{{ fad_glb_vs_pools }}"
       loop_control:
         label: "{{ item.name }}"
-      tags:
-        - cleanup
+      tags: [cleanup, fad_glb_vs_pool]
 
     - name: Clean up the created Servers resources.
       ansible.builtin.uri:
@@ -81,13 +93,11 @@
         return_content: "{{ fad_api_uri_params.return_content }}"
         status_code: "{{ fad_api_uri_params.status_code }}"
         headers: "{{ fad_api_header }}"
-      register: fad_glb_dc_existing_data
-      when: do_cleanup == 'true' | bool | default('false')
+      when: is do_cleanup
       loop: "{{ fad_glb_servers }}"
       loop_control:
         label: "{{ item.name }}"
-      tags:
-        - cleanup
+      tags: [cleanup, fad_glb_servers]
 
     - name: Clean up the created Data Centers resources.
       ansible.builtin.uri:
@@ -98,10 +108,9 @@
         return_content: "{{ fad_api_uri_params.return_content }}"
         status_code: "{{ fad_api_uri_params.status_code }}"
         headers: "{{ fad_api_header }}"
-      register: fad_glb_dc_existing_data
-      when: do_cleanup == 'true' | bool | default('false')
+      when: is do_cleanup
       loop: "{{ fad_glb_data_centers }}"
       loop_control:
         label: "{{ item.name }}"
-      tags:
-        - cleanup
+      tags: [cleanup, fad_glb_data_center]
+

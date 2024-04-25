@@ -4,18 +4,18 @@
   ansible.builtin.debug:
     msg: >
       {{ (lookup('url', fad_glb_host_vsp_list_api_endpoint
-      % (glb_host.0.name, glb_host.1.name), validate_certs=false, split_lines=false,
+      % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name), validate_certs=false, split_lines=false,
       headers=fad_api_header) | from_json).get('payload') }}
   loop: "{{ fad_glb_hosts | subelements('vsp_lists') }}"
   loop_control:
     loop_var: glb_host
-    label: "{{ glb_host.0.name + ' to ' + glb_host.1.pool_name }}"
+    label: "{{ glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain) + ' to ' + glb_host.1.pool_name }}"
   tags: [debug]
 
 - name: Create new GLB Host VSP List entry if it's not found.
   ansible.builtin.uri:
     method: POST
-    url: "{{ fad_glb_host_vsp_list_api_endpoint | format(glb_host.0.name, glb_host.1.name) }}"
+    url: "{{ fad_glb_host_vsp_list_api_endpoint | format(glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name) }}"
     body_format: "{{ fad_api_uri_params.body_format }}"
     validate_certs: "{{ fad_api_uri_params.validate_certs }}"
     return_content: "{{ fad_api_uri_params.return_content }}"
@@ -33,10 +33,10 @@
   loop: "{{ fad_glb_hosts | subelements('vsp_lists') }}"
   loop_control:
     loop_var: glb_host
-    label: "{{ glb_host.0.name + ' to ' + glb_host.1.pool_name }}"
+    label: "{{ glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain) + ' to ' + glb_host.1.pool_name }}"
   when: >
     (lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload').mkey is undefined
   changed_when: "fad_glb_host_vsp_list_post_results.json.payload == 0"
   failed_when: "fad_glb_host_vsp_list_post_results.json.payload not in [0, -15]"
@@ -44,7 +44,7 @@
 - name: Update GLB Host VSP List entry if it's exist and any of its value is changed.
   ansible.builtin.uri:
     method: PUT
-    url: "{{ fad_glb_host_vsp_list_api_endpoint | format(glb_host.0.name, glb_host.1.name) }}"
+    url: "{{ fad_glb_host_vsp_list_api_endpoint | format(glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name) }}"
     body_format: "{{ fad_api_uri_params.body_format }}"
     validate_certs: "{{ fad_api_uri_params.validate_certs }}"
     return_content: "{{ fad_api_uri_params.return_content }}"
@@ -62,23 +62,23 @@
   loop: "{{ fad_glb_hosts | subelements('vsp_lists') }}"
   loop_control:
     loop_var: glb_host
-    label: "{{ glb_host.0.name + ' to ' + glb_host.1.pool_name }}"
+    label: "{{ glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain) + ' to ' + glb_host.1.pool_name }}"
   when: >
     ((lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload')['mkey'] is defined) and
     (
     (lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload')['isp'] != glb_host.1.isp | default('')  or
     (lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload')['topology'] != glb_host.1.topology | default('') or
     (lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload')['virtual-server-pool'] != glb_host.1.pool_name or
     (lookup('url', fad_glb_host_vsp_list_api_endpoint
-    % (glb_host.0.name, glb_host.1.name),validate_certs=false, split_lines=false,
+    % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name),validate_certs=false, split_lines=false,
     headers=fad_api_header) | from_json).get('payload')['weight'] != glb_host.1.weight | default ('100') | string
     )
   changed_when: "fad_glb_host_vsp_list_put_results.json.payload == 0"
@@ -88,10 +88,10 @@
   ansible.builtin.debug:
     msg: >
       {{ (lookup('url', fad_glb_host_vsp_list_api_endpoint
-      % (glb_host.0.name, glb_host.1.name), validate_certs=false, split_lines=false,
+      % (glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain), glb_host.1.name), validate_certs=false, split_lines=false,
       headers=fad_api_header) | from_json).get('payload') }}
   loop: "{{ fad_glb_hosts | subelements('vsp_lists') }}"
   loop_control:
     loop_var: glb_host
-    label: "{{ glb_host.0.name + ' to ' + glb_host.1.pool_name }}"
+    label: "{{ glb_host.0.name | default(glb_host.hostname + '.' + glb_host.domain) + ' to ' + glb_host.1.pool_name }}"
   tags: [debug]

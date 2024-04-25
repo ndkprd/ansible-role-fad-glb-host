@@ -1,0 +1,3 @@
+roles:
+  - ndkprd.fad_glb_host
+  - ndkprd.fad_dns_policy

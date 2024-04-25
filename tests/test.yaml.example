@@ -53,10 +53,7 @@
   roles:
     - ndkprd.fortiadc-glb-vs-pools
 
-  # clean-up tasks if you need to delete the resources you just create.
-  tasks:
-
-    - name: Clean up the created GLB Hosts resources.
+    - name: Clean up the created GLB Host resources.
       ansible.builtin.uri:
         method: DELETE
         url: "https://{{ ansible_host }}/api/global_load_balance_host?vdom={{ fad_vdom }}&mkey={{ item.name }}"
@@ -66,7 +63,7 @@
         status_code: "{{ fad_api_uri_params.status_code }}"
         headers: "{{ fad_api_header }}"
       when: do_cleanup == 'true' | bool | default('false')
-      loop: "{{ fad_glb_data_centers }}"
+      loop: "{{ fad_glb_hosts }}"
       loop_control:
         label: "{{ item.name }}"
       tags: [cleanup, fad_glb_host]

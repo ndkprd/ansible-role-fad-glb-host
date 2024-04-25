@@ -10,14 +10,14 @@ fad_dns_policy:
     forward: "first" # "first" or "only"
     forwarders: "" # valid Remote DNS Servers entry mkey
     recursion_status: "disable" # "enable" or "disable"
-    rrlimit: "" # valid Response Rate Limit 
+    rrlimit: "" # valid Response Rate Limit
     zone_list: "ndkprd.com devops.ndkprd.com infra.ndkprd.com " # is here for documentation purpose only
 
 fad_glb_data_centers:
   - name: hq.ndkprd.com  # Data Center name/mkey
     location: ID  # 2 letters country ID
-  - name: dc1.ndkprd.com    
-    location: ID     
+  - name: dc1.ndkprd.com
+    location: ID
   - name: dc2.ndkprd.com
     location: ID
 
@@ -26,7 +26,7 @@ fad_glb_servers:
     data_center: "hq.ndkprd.com" # Data Center name, must exists first
     health_check_ctrl: enable
     health_check_list: "LB_HLTHCK_ICMP " # the whitespace is a must
-    health_check_relationship: AND      
+    health_check_relationship: AND
     server_type: Generic-Host # "Generic-Host" or "FortiADC-SLB"
     auth_type: none # Only for FortiADC-SLB
     address_type: ipv4 # FAD address type
@@ -106,7 +106,7 @@ fad_glb_vs_pools:
         weight: 100
       - id: 1002
         is_backup: disable
-        server:  dmz.dc1.ndkprd.com
+        server: dmz.dc1.ndkprd.com
         server_member_name: public-waf-2.dc1.ndkprd.com
 
 fad_glb_hosts:

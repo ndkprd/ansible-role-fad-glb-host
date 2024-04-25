@@ -1,12 +1,11 @@
 ---
 
 dependencies:
-  - ndkprd.fortiadc-glb-vs-pools
-  - ndkprd.fortiadc-dns-policy
+  - ndkprd.fad_glb_vs_pool
 
 galaxy_info:
   author: ndkprd
-  role_name: fortiadc-glb-hosts
+  role_name: fad_glb_host
   description: An Ansible role to mange/setup Fortinet's FortiADC Global Load Balance host configuration.
   license: MIT
   min_ansible_version: '2.12'

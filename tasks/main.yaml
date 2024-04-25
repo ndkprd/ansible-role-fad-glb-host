@@ -1,15 +1,5 @@
 ---
 
-# - name: Include the add GLB host task.
-#   tags:
-#     - fad_glb_hosts
-#   block:
-#     - name: Include the add GLB host task.
-#       ansible.builtin.include_tasks: 01-0-glb-host.yaml
-#       loop: "{{ fad_glb_hosts }}"
-#       loop_control:
-#         loop_var: host
-
 - name: Create/update GLB Hosts entries.
   tags: [fad_glb_hosts]
   vars:
@@ -230,4 +220,7 @@
         label: "{{ glb_host.0.name + ' to ' + glb_host.1.pool_name }}"
       tags: [debug]
 
-# THE DNS POLICY MOVE ROLE WILL BE HERE
+- name: Update DNS Policy zone list.
+  ansible.builtin.include_role:
+    name: ndkprd.fad_dns_policy
+  tags: [fad_glb_hosts]

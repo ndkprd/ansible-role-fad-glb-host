@@ -1,0 +1,6 @@
+[fortiadc]
+fad-01 ansible_host=fad-01.infra.ndkprd.com ansible_connection=local fad_apitoken=mysupersecrettoken fad_vdom=root
+
+[fortiadc:vars]
+http_port=80
+https_port=443

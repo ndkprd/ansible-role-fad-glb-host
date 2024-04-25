@@ -1,0 +1,4 @@
+.vscode
+tests/test.yaml
+tests/group_vars
+tests/hosts

@@ -51,7 +51,7 @@
             weight: 10
 
   roles:
-    - ../../ansible-role-fortiadc-glb-hosts
+    - ndkprd.fad_glb_host
 
   tasks:
     - name: Clean up the created GLB Host resources.

@@ -1,16 +1,26 @@
 ---
 
+- name: Set async value if async mode is enabled.
+  ansible.builtin.set_fact:
+    async_timeout: "{{ async_mode.timeout }}"
+    async_poll_duration: "{{ async_mode.poll_duration }}"
+  when: async_mode.enabled
+
 - name: Create/update GLB Hosts entries.
   vars:
     fad_glb_host_api_endpoint: "{{ fad_base_url + fad_api_endpoint.glb_host }}"
   ansible.builtin.import_tasks: fad_glb_host.yaml
   tags: [fad_glb_host]
+  async: "{{ async_timeout | default(omit) }}"
+  poll: "{{ async_poll_duration | default(omit) }}"
 
 - name: Create/update GLB Host VSP List entries.
   vars:
     fad_glb_host_vsp_list_api_endpoint: "{{ fad_base_url + fad_api_endpoint.glb_host_vsp_list }}"
   ansible.builtin.import_tasks: fad_glb_host_vsp_list.yaml
   tags: [fad_glb_host, fad_glb_host_vsp_list]
+  async: "{{ async_timeout | default(omit) }}"
+  poll: "{{ async_poll_duration | default(omit) }}"
 
 - name: Update DNS Policy zone list.
   ansible.builtin.include_role:

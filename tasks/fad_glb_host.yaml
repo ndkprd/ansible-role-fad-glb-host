@@ -29,7 +29,7 @@
       "fortiview": "{{ glb_host.fortiview | default('enable') }}",
       "load-balance-method": "{{ glb_host.load_balance_method | default('weight') }}",
       "persistence": "{{ glb_host.persistence | default('enable') }}",
-      "respond-single-record": "{{ glb_host.respond_single_record | default('enable') }}"
+      "respond-single-record": "{{ glb_host.respond_single_record | default('disable') }}"
       }
   register: fad_glb_host_post_results
   loop: "{{ fad_glb_hosts }}"
@@ -62,7 +62,7 @@
       "fortiview": "{{ glb_host.fortiview | default('enable') }}",
       "load-balance-method": "{{ glb_host.load_balance_method | default('weight') }}",
       "persistence": "{{ glb_host.persistence | default('enable') }}",
-      "respond-single-record": "{{ glb_host.respond_single_record | default('enable') }}"
+      "respond-single-record": "{{ glb_host.respond_single_record | default('disable') }}"
       }
   register: fad_glb_host_put_results
   loop: "{{ fad_glb_hosts }}"
@@ -95,7 +95,7 @@
     headers=fad_api_header) | from_json).get('payload')['persistence'] != glb_host.persistence | default('enable') or
     (lookup('url', fad_glb_host_api_endpoint
     % (glb_host.name | default(glb_host.hostname + '.' + glb_host.domain)), validate_certs=false, split_lines=false,
-    headers=fad_api_header) | from_json).get('payload')['respond-single-record'] != glb_host.respond_single_record | default('enable')
+    headers=fad_api_header) | from_json).get('payload')['respond-single-record'] != glb_host.respond_single_record | default('disable')
     )
   changed_when: "fad_glb_host_put_results.json.payload == 0"
   failed_when: "fad_glb_host_put_results.json.payload != 0 and fad_glb_host_put_results.json.payload != -15"

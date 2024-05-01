@@ -2,6 +2,7 @@
 
 dependencies:
   - ndkprd.fad_glb_vs_pool
+  - ndkprd.fad_dns_policy
 
 galaxy_info:
   author: ndkprd

@@ -1,0 +1,48 @@
+---
+
+- name: Print out the current zone_list.
+  ansible.builtin.debug:
+    msg: >
+      {{ (lookup('url', fad_dns_policy_api_endpoint
+      % (glb_host.dns_policy), validate_certs=false, split_lines=false,
+      headers=fad_api_header) | from_json).get('payload')['zone_list'] }}
+  loop: "{{ fad_glb_hosts }}"
+  loop_control:
+    loop_var: glb_host
+    label: "{{ glb_host.domain + ' to ' + glb_host.dns_policy }}"
+  tags: [debug]
+
+- name: Update DNS Policy zone list.
+  ansible.builtin.uri:
+    method: PUT
+    url: "{{ fad_dns_policy_api_endpoint | format(glb_host.dns_policy) }}"
+    body_format: "{{ fad_api_uri_params.body_format }}"
+    validate_certs: "{{ fad_api_uri_params.validate_certs }}"
+    return_content: "{{ fad_api_uri_params.return_content }}"
+    status_code: "{{ fad_api_uri_params.status_code }}"
+    headers: "{{ fad_api_header }}"
+    body: |
+      {
+        "zone_list": "{{ (lookup('url', fad_dns_policy_api_endpoint
+          % (glb_host.dns_policy), validate_certs=false, split_lines=false,
+          headers=fad_api_header) | from_json).get('payload')['zone_list']
+          + 'fqdn_generate_' + glb_host.domain + '. '}}"
+      }
+  register: fad_dns_policy_put_results
+  loop: "{{ fad_glb_hosts }}"
+  loop_control:
+    loop_var: glb_host
+    label: "{{ glb_host.domain + ' to ' + glb_host.dns_policy }}"
+  failed_when: "fad_dns_policy_put_results.json.payload != 0 and fad_dns_policy_put_results.json.payload != -15"
+
+- name: Print out the new zone_list.
+  ansible.builtin.debug:
+    msg: >
+      {{ (lookup('url', fad_dns_policy_api_endpoint
+      % (glb_host.dns_policy), validate_certs=false, split_lines=false,
+      headers=fad_api_header) | from_json).get('payload')['zone_list'] }}
+  loop: "{{ fad_glb_hosts }}"
+  loop_control:
+    loop_var: glb_host
+    label: "{{ glb_host.domain + ' to ' + glb_host.dns_policy }}"
+  tags: [debug]

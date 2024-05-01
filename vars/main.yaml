@@ -10,7 +10,7 @@ fad_api_endpoint:
   glb_vs_pool_member: "/global_load_balance_virtual_server_pool_child_member?vdom={{ fad_vdom }}&pkey=%s&mkey=%s"
   glb_host: "/global_load_balance_host?vdom={{ fad_vdom }}&mkey=%s"
   glb_host_vsp_list: "/global_load_balance_host_child_virtual_server_pool_list?vdom={{ fad_vdom }}&pkey=%s&mkey=%s"
-  dns_policy: "/api/global_dns_server_policy?vdom={{ fad_vdom }}&mkey=%s"
+  dns_policy: "/global_dns_server_policy?vdom={{ fad_vdom }}&mkey=%s"
 
 fad_api_uri_params:
   body_format: json

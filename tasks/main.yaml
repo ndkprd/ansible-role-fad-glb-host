@@ -13,6 +13,6 @@
   tags: [fad_glb_host, fad_glb_host_vsp_list]
 
 - name: Update DNS Policy zone list.
-  ansible.builtin.include_role:
-    name: ndkprd.fad_dns_policy
-  tags: [fad_glb_host]
+  vars:
+    fad_dns_policy_api_endpoint: "{{ fad_base_url + fad_api_endpoint.dns_policy }}"
+  ansible.builtin.import_tasks: fad_dns_policy_zone_list_update.yaml

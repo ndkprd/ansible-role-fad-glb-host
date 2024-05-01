@@ -37,6 +37,7 @@
             health_check_inherit: enable
             health_check_list: ""
             health_check_relationship: "OR"
+
     # global-load-balance virtual-server-pool entries
     fad_glb_vs_pools:
       - name: public-waf.dc1.ndkprd.com # VS Pools mkey
@@ -49,6 +50,58 @@
             server: dmz.dc1.ndkprd.com # GLB Servers
             server_member_name: public-waf-1.dc1.ndkprd.com # GLB Servers member
             weight: 10
+            weight: 100
+    # global-load-balance hosts
+    fad_glb_hosts:
+      - name: public_repo.devops.ndkprd.com # GLB Host mkey
+        hostname: repo001 # hostname without domain
+        domain: devops.ndkprd.com # base domain without dot
+        default_ipv4: "0.0.0.0" # default IP when none of virtual server work
+        default_ipv6: "::"
+        fortiview: disable
+        load_balance_method: "weight"
+        persistence: enable
+        respond_single_record: enable
+        dns_policy: "PUBLIC_DNS_POLICY" # valid DNS Policy mkey
+        vsp_lists:
+          - name: DC1 # vsp_list mkey
+            pool_name: public-waf.dc1.ndkprd.com # existing pool name, MUST EXIST FIRST
+            weight: "100" # VS pool weight
+    # global-dns-server policy entries
+    fad_dns_policies:
+      - name: "PUBLIC_DNS_POLICY"
+        source_address: "any"
+        destination_address: "any"
+        dns64_list: ""
+        dnssec_validate_status: "disable"
+        forward: "first"
+        forwarders: ""
+        recursion_status: "disable"
+        rrlimit: ""
+    # global-dns-server general
+    fad_dns_general_settings:
+      global_dns_mode: "enable"
+      certificate: "Factory"
+      dnssec_validate_status: "disable"
+      doh_interface_list: ""
+      doh_port: "80"
+      doh_status: "disable"
+      dohs_interface_list: ""
+      dohs_port: "443"
+      dohs_status: "disable"
+      dot_interface_list: ""
+      dot_port: "853"
+      dot_status: "disable"
+      forward: "first"
+      forwarders: ""
+      interface_list: ""
+      ipv4_mode: "enable"
+      ipv6_mode: "disable"
+      listen_to_all_interface: "enable"
+      recursion_status: "disable"
+      response_ratelimit: ""
+      traffic_log: "enable"
+      use_system_dns_server: "enable"
 
   roles:
     - ndkprd.fad_glb_host

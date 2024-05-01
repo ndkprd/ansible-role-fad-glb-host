@@ -16,3 +16,4 @@
   vars:
     fad_dns_policy_api_endpoint: "{{ fad_base_url + fad_api_endpoint.dns_policy }}"
   ansible.builtin.import_tasks: fad_dns_policy_zone_list_update.yaml
+  tags: [fad_glb_host, fad_update_zone_list]
